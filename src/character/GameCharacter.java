@@ -1,0 +1,66 @@
+package character;
+
+public abstract class GameCharacter implements Comparable<GameCharacter> {
+    private int hp;
+    private int attack;
+    private int magic;
+    private int mana;
+    private int speed;
+
+    public GameCharacter(int hp, int attack, int magic, int mana, int speed) {
+        this.hp = hp;
+        this.attack = attack;
+        this.magic = magic;
+        this.mana = mana;
+        this.speed = speed;
+    }
+
+    public abstract void attack(GameCharacter target);
+
+    public abstract void magic(GameCharacter target);
+
+    public int getHp() {
+        return hp;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
+
+    public int getAttack() {
+        return attack;
+    }
+
+    public void setAttack(int attack) {
+        this.attack = attack;
+    }
+
+    public int getMagic() {
+        return magic;
+    }
+
+    public void setMagic(int magic) {
+        this.magic = magic;
+    }
+
+    public int getMana() {
+        return mana;
+    }
+
+    public void setMana(int mana) {
+        this.mana = mana;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    @Override
+    public int compareTo(GameCharacter other) {
+        return Integer.compare(this.speed, other.speed);
+    }
+}
