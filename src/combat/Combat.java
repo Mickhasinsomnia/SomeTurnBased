@@ -11,7 +11,7 @@ public class Combat {
 
 	public static void fight(ArrayList<GameCharacter> a, ArrayList<Enemy> b) {
 		ArrayList<GameCharacter> all = new ArrayList<>();
-		Scanner use = new Scanner(System.in);
+		Scanner use = new Scanner(System.in); //will not use in fx
 
 		while (a.size() > 0 && b.size() > 0) { 
 			all.clear(); 
@@ -27,24 +27,24 @@ public class Combat {
 					GameCharacter target = a.get((int) (Math.random() * a.size()));
 					enemy.takeAction(target);
 				} else {
-					System.out.println(current.getClass().getSimpleName() + "'s turn. Choose an enemy to attack:");
-
-					ArrayList<Enemy> enemies = getEnemies(b);
-					for (int i = 0; i < enemies.size(); i++) {
-						System.out.println(i + 1 + ". " + enemies.get(i).getClass().getSimpleName() + " HP: "
-								+ enemies.get(i).getHp());
-					}
-					int choice = use.nextInt();
-					if (choice > 0 && choice <= enemies.size()) {
-						Enemy selectedEnemy = enemies.get(choice - 1);
-						current.attack(selectedEnemy);
-					}
+//					System.out.println(current.getClass().getSimpleName() + "'s turn. Choose an enemy to attack:");
+//
+//					ArrayList<Enemy> enemies = getEnemies(b);
+//					for (int i = 0; i < enemies.size(); i++) {
+//						System.out.println(i + 1 + ". " + enemies.get(i).getClass().getSimpleName() + " HP: "
+//								+ enemies.get(i).getHp());
+//					}
+//					int choice = use.nextInt();
+//					if (choice > 0 && choice <= enemies.size()) {
+//						Enemy selectedEnemy = enemies.get(choice - 1);
+//						current.attack(selectedEnemy);
+//					}
 				}
 
 				checkForDeadCharacters(a, b);
 			}
 		}
-		use.close();
+		use.close();//just test will not use 
 	}
 
 	private static ArrayList<Enemy> getEnemies(ArrayList<Enemy> b) {
