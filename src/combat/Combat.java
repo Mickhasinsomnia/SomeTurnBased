@@ -22,7 +22,7 @@ public class Combat {
              
                 Enemy enemy = (Enemy) current;
                 
-                GameCharacter target = a.get(0);
+                GameCharacter target = a.get((int)(Math.random()*a.size()));
                 enemy.takeAction(target); 
             } else {
                 System.out.println(current.getClass().getSimpleName() + "'s turn. Choose an enemy to attack:");
