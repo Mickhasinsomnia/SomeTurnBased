@@ -67,4 +67,9 @@ public abstract class GameCharacter implements Comparable<GameCharacter> {
     public int compareTo(GameCharacter other) {
         return Integer.compare(this.speed, other.speed);
     }
+    
+    @Override
+    public String toString() {
+    	return this.getClass().getSimpleName()+" "+this.getAttack();
+    }
 }
