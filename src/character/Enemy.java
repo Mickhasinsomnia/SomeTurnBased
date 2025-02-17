@@ -3,7 +3,11 @@ package character;
 public class Enemy extends GameCharacter {
 
     public Enemy(int hp, int attack, int magic, int mana, int speed) {
-        super(hp, attack, magic, mana, speed);
+        setHp(hp);
+        setAttack(attack);
+        setMagic(magic);
+        setMana(mana);
+        setSpeed(speed);
     }
 
     @Override

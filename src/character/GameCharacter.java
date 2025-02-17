@@ -7,13 +7,11 @@ public abstract class GameCharacter implements Comparable<GameCharacter> {
     private int mana;
     private int speed;
 
-    public GameCharacter(int hp, int attack, int magic, int mana, int speed) {
-        this.hp = hp;
-        this.attack = attack;
-        this.magic = magic;
-        this.mana = mana;
-        this.speed = speed;
-    }
+   
+    
+    public GameCharacter() {
+    	super();
+	}
 
     public abstract void attack(GameCharacter target);
 
@@ -32,6 +30,8 @@ public abstract class GameCharacter implements Comparable<GameCharacter> {
     }
 
     public void setAttack(int attack) {
+    	if(attack<0)
+    		attack=0;
         this.attack = attack;
     }
 
@@ -40,6 +40,8 @@ public abstract class GameCharacter implements Comparable<GameCharacter> {
     }
 
     public void setMagic(int magic) {
+    	if(magic<0)
+    		magic=0;
         this.magic = magic;
     }
 
@@ -56,6 +58,8 @@ public abstract class GameCharacter implements Comparable<GameCharacter> {
     }
 
     public void setSpeed(int speed) {
+    	if(speed<0)
+    		speed=0;
         this.speed = speed;
     }
 
