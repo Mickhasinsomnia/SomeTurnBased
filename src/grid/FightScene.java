@@ -26,6 +26,7 @@ public class FightScene extends VBox {
 	private Pane canvas;
 	private boolean pressed;
 	private int choice;
+	private int type;
 
 	public FightScene(ArrayList<GameCharacter> players, ArrayList<Enemy> enemies) {
 		this.players = players;
@@ -75,11 +76,13 @@ public class FightScene extends VBox {
 						}
 						attackButton.setOnMouseClicked(event -> {
 							pressed = true;
+							type=1;
 
 						});
 
 						magicButton.setOnMouseClicked(event -> {
 							pressed = true;
+							type=2;
 						});
 						while (!pressed) {
 							try {
@@ -89,11 +92,11 @@ public class FightScene extends VBox {
 							}
 						}
 						System.out.println();
-						if (choice >= 0 && choice <= enemies.size()) {
+						if (choice >= 0 && choice < enemies.size()) {
 							Enemy selectedEnemy = enemies.get(choice);
 							System.out.println("1: attack");
 							System.out.println("2: magic");
-							int damageAction = 1;
+							int damageAction = type;
 							if (damageAction == 1) {
 								current.attack(selectedEnemy);
 							} else if (damageAction == 2) {
