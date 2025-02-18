@@ -9,6 +9,14 @@ public class Enemy extends GameCharacter {
         setMana(mana);
         setSpeed(speed);
     }
+    
+    public Enemy() {
+    	setHp(200);
+    	setAttack(20);
+    	setMagic(30);
+    	setMana(100);
+    	setSpeed(1);
+    }
 
     @Override
     public void attack(GameCharacter target) {
