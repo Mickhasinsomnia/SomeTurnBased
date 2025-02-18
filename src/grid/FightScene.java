@@ -7,25 +7,30 @@ import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Scanner;
 
 public class FightScene extends VBox {
 
 	private ArrayList<GameCharacter> players;
 	private ArrayList<Enemy> enemies;
-	private Canvas canvas;
+	private Pane canvas;
 	private boolean pressed;
 
 	public FightScene(ArrayList<GameCharacter> players, ArrayList<Enemy> enemies) {
 		this.players = players;
 		this.enemies = enemies;
-		canvas = new Canvas(700, 700);
+		canvas = new Pane();
+		canvas.setMinSize(700, 700);
 		this.getChildren().add(canvas);
 		pressed = false;
 
@@ -69,7 +74,11 @@ public class FightScene extends VBox {
 						}
 						attackButton.setOnMouseClicked(event -> {
 							pressed = true;
-							
+
+						});
+
+						magicButton.setOnMouseClicked(event -> {
+							pressed = true;
 						});
 						int choice = 1;
 						while (!pressed) {
@@ -93,8 +102,7 @@ public class FightScene extends VBox {
 						}
 					}
 					Combat.checkForDeadCharacters(players, enemies);
-					Platform.runLater(()->
-					drawScene());
+					Platform.runLater(() -> drawScene());
 					pressed = false;
 				}
 				try {
@@ -112,27 +120,43 @@ public class FightScene extends VBox {
 
 		});
 
-	
 		combatThread.start();
 	}
 
 	private void drawScene() {
-		GraphicsContext gc = canvas.getGraphicsContext2D();
-		gc.setFill(Color.GREEN);
-		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		gc.setFill(Color.WHITE);
+		this.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
+
+		canvas.getChildren().clear();
 		int xPos = 50;
-		gc.setFont(Font.font(15));
 		for (GameCharacter player : players) {
-			gc.fillText("Swordman HP: " + player.getHp(), xPos, 50);
+			Text first = new Text(player.getClass().getSimpleName() + " HP: " + player.getHp());
+			first.setFont(Font.font(15));
+			first.setLayoutX(xPos);
+			first.setLayoutY(50);
+			Circle rep = new Circle(20);
+			rep.setLayoutX(xPos + 10);
+			rep.setLayoutY(80);
+			rep.setOnMouseClicked(event->{
+				System.out.println("enemy");
+			});
+			canvas.getChildren().addAll(first, rep);
 			xPos += 150;
 		}
-
-		gc.setFill(Color.WHITE);
 		int yPos = 150;
 		for (Enemy enemy : enemies) {
-			gc.fillText("Enemy HP: " + enemy.getHp(), 50, yPos);
+			Text second = new Text("Enemy HP: " + enemy.getHp());
+			second.setFont(Font.font(15));
+			second.setLayoutX(50);
+			second.setLayoutY(yPos);
+			Circle rep = new Circle(20);
+			rep.setLayoutX(50);
+			rep.setLayoutY(yPos+60);
 			yPos += 150;
+			rep.setOnMouseClicked(event->{
+				System.out.println("enemy");
+			});
+
+			canvas.getChildren().addAll(second, rep);
 		}
 	}
 

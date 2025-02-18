@@ -23,7 +23,7 @@ public class Main extends Application {
        
        player.add(new Swordman());
        
-       player.add(new Swordman());
+       player.add(new Wizard());
      
        
        ArrayList<Enemy>enemy=new ArrayList<>();
