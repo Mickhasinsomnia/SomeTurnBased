@@ -25,6 +25,7 @@ public class FightScene extends VBox {
 	private ArrayList<Enemy> enemies;
 	private Pane canvas;
 	private boolean pressed;
+	private int choice;
 
 	public FightScene(ArrayList<GameCharacter> players, ArrayList<Enemy> enemies) {
 		this.players = players;
@@ -80,7 +81,6 @@ public class FightScene extends VBox {
 						magicButton.setOnMouseClicked(event -> {
 							pressed = true;
 						});
-						int choice = 1;
 						while (!pressed) {
 							try {
 								Thread.sleep(100);
@@ -89,11 +89,11 @@ public class FightScene extends VBox {
 							}
 						}
 						System.out.println();
-						if (choice > 0 && choice <= enemies.size()) {
-							Enemy selectedEnemy = enemies.get(choice - 1);
+						if (choice >= 0 && choice <= enemies.size()) {
+							Enemy selectedEnemy = enemies.get(choice);
 							System.out.println("1: attack");
 							System.out.println("2: magic");
-							int damageAction = choice;
+							int damageAction = 1;
 							if (damageAction == 1) {
 								current.attack(selectedEnemy);
 							} else if (damageAction == 2) {
@@ -125,7 +125,7 @@ public class FightScene extends VBox {
 
 	private void drawScene() {
 		this.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
-
+		
 		canvas.getChildren().clear();
 		int xPos = 50;
 		for (GameCharacter player : players) {
@@ -136,27 +136,30 @@ public class FightScene extends VBox {
 			Circle rep = new Circle(20);
 			rep.setLayoutX(xPos + 10);
 			rep.setLayoutY(80);
-			rep.setOnMouseClicked(event->{
-				System.out.println("enemy");
-			});
 			canvas.getChildren().addAll(first, rep);
 			xPos += 150;
+	
 		}
 		int yPos = 150;
+		int countS=0;
 		for (Enemy enemy : enemies) {
 			Text second = new Text("Enemy HP: " + enemy.getHp());
 			second.setFont(Font.font(15));
 			second.setLayoutX(50);
 			second.setLayoutY(yPos);
+			
 			Circle rep = new Circle(20);
 			rep.setLayoutX(50);
 			rep.setLayoutY(yPos+60);
-			yPos += 150;
+			final int c=countS;
 			rep.setOnMouseClicked(event->{
-				System.out.println("enemy");
+				choice=c;
+				System.out.println("Choose"+(choice+1));
 			});
 
 			canvas.getChildren().addAll(second, rep);
+			yPos += 150;
+			countS++;
 		}
 	}
 
