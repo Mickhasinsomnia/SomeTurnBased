@@ -6,7 +6,6 @@ import character.Enemy;
 import character.GameCharacter;
 import character.Swordman;
 import character.Wizard;
-import combat.Combat;
 import grid.FightScene;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -40,7 +39,7 @@ public class Main extends Application {
        
        StackPane root=new StackPane();
        root.getChildren().add(use);
-       Scene ans=new Scene(root,800,800);
+       Scene ans=new Scene(root,750,750);
        
        primaryStage.setScene(ans);
       primaryStage.show();

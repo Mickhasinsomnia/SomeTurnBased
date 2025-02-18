@@ -9,63 +9,11 @@ import java.util.Scanner;
 
 public class Combat {
 
-	public static void fight(ArrayList<GameCharacter> a, ArrayList<Enemy> b) {
-		ArrayList<GameCharacter> all = new ArrayList<>();
-		Scanner use = new Scanner(System.in); //will not use in fx
-
-		while (a.size() > 0 && b.size() > 0) { 
-			all.clear(); 
-			all.addAll(a);
-			all.addAll(b);
-			Collections.sort(all);
-
-			for (GameCharacter current : all) {
-				if (current instanceof Enemy) {
-
-					Enemy enemy = (Enemy) current;
-
-					GameCharacter target = a.get((int) (Math.random() * a.size()));
-					enemy.takeAction(target);
-				} else {
-					System.out.println(current.getClass().getSimpleName() + "'s turn. Choose an enemy to attack:");
-
-					ArrayList<Enemy> enemies = getEnemies(b);
-					for (int i = 0; i < enemies.size(); i++) {
-						System.out.println(i + 1 + ". " + enemies.get(i).getClass().getSimpleName() + " HP: "
-								+ enemies.get(i).getHp());
-					}
-					int choice = use.nextInt();
-					if (choice > 0 && choice <= enemies.size()) {
-						Enemy selectedEnemy = enemies.get(choice - 1);
-						System.out.println("1: attack");
-						System.out.println("2: magic");
-						int damageAction=use.nextInt();
-						if(damageAction==1) {
-						current.attack(selectedEnemy);
-						}
-						else if (damageAction==2) {
-							current.magic(selectedEnemy);
-						}
-					}
-				}
-				checkForDeadCharacters(a, b);
-			
-			}
-		}
-		use.close();//just test will not use 
-		if(a.size()>b.size()) {
-			System.out.println("Victory");
-		}
-		else {
-			System.out.println("Try again");
-		}
-	}
-
-	private static ArrayList<Enemy> getEnemies(ArrayList<Enemy> b) {
+	public static ArrayList<Enemy> getEnemies(ArrayList<Enemy> b) {
 		return b;
 	}
 
-	private static void checkForDeadCharacters(ArrayList<GameCharacter> a, ArrayList<Enemy> b) {
+	public static void checkForDeadCharacters(ArrayList<GameCharacter> a, ArrayList<Enemy> b) {
 
 		a.removeIf(character -> character.getHp() <= 0);
 		b.removeIf(enemy -> enemy.getHp() <= 0);
