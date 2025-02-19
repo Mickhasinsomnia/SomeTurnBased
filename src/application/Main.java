@@ -23,6 +23,8 @@ public class Main extends Application {
        
        player.add(new Swordman());
        
+       player.add(new Swordman());
+       
        player.add(new Wizard());
      
        
@@ -39,32 +41,18 @@ public class Main extends Application {
        
        StackPane root=new StackPane();
        root.getChildren().add(use);
-       Scene ans=new Scene(root,750,750);
+       Scene ans=new Scene(root,900,700);
        
        primaryStage.setScene(ans);
+
       primaryStage.show();
        
-       
+      primaryStage.setResizable(false);
     }
 
     
     public static void main(String[] args) {
-//    	 ArrayList<GameCharacter>player=new ArrayList<>();
-//    
-//       player.add(new Swordman());
-//       
-//       player.add(new Wizard());
-//       
-//       
-//       ArrayList<Enemy>enemy=new ArrayList<>();
-//       
-//       enemy.add(new Enemy());
-//       
-//       enemy.add(new Enemy());
-//       enemy.add(new Enemy());
-//       enemy.add(new Enemy());
-//       
-//       Combat.fight(player, enemy);
+
     	launch(args);
     }
 }

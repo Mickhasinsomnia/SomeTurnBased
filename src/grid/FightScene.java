@@ -1,29 +1,33 @@
 package grid;
 
-import character.GameCharacter;
+import character.*;
 import combat.Combat;
 import character.Enemy;
 import javafx.application.Platform;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
+
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
+
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class FightScene extends VBox {
+public class FightScene extends Pane {
 
 	private ArrayList<GameCharacter> players;
 	private ArrayList<Enemy> enemies;
-	private Pane canvas;
+	private Pane pane;
 	private boolean pressed;
 	private int choice;
 	private int type;
@@ -31,15 +35,23 @@ public class FightScene extends VBox {
 	public FightScene(ArrayList<GameCharacter> players, ArrayList<Enemy> enemies) {
 		this.players = players;
 		this.enemies = enemies;
-		canvas = new Pane();
-		canvas.setMinSize(700, 700);
-		this.getChildren().add(canvas);
+		pane = new Pane();
+		pane.setMinSize(700, 700);
+		this.getChildren().add(pane);
 		pressed = false;
 
 		drawScene();
 
 		Button attackButton = new Button("Attack");
 		Button magicButton = new Button("Magic");
+
+		attackButton.setLayoutX(700);
+		attackButton.setLayoutY(650);
+		magicButton.setLayoutX(800);
+		magicButton.setLayoutY(650);
+
+		magicButton.setMinSize(50, 30);
+		attackButton.setMinSize(50, 30);
 
 		this.getChildren().add(attackButton);
 		this.getChildren().add(magicButton);
@@ -67,22 +79,28 @@ public class FightScene extends VBox {
 							enemy.takeAction(target);
 						}
 					} else {
-
+						choice = -1;
+						checkForDeadCharacters(players, enemies);
 						System.out.println(current.getClass().getSimpleName() + "'s turn. Choose an enemy to attack:");
 						ArrayList<Enemy> chooseEnemy = Combat.getEnemies(enemies);
 						for (int i = 0; i < chooseEnemy.size(); i++) {
 							System.out.println(i + 1 + ". " + enemies.get(i).getClass().getSimpleName() + " HP: "
 									+ enemies.get(i).getHp());
 						}
+
 						attackButton.setOnMouseClicked(event -> {
-							pressed = true;
-							type=1;
+							if (choice != -1) {
+								pressed = true;
+								type = 1;
+							}
 
 						});
 
 						magicButton.setOnMouseClicked(event -> {
-							pressed = true;
-							type=2;
+							if (choice != -1) {
+								pressed = true;
+								type = 2;
+							}
 						});
 						while (!pressed) {
 							try {
@@ -103,10 +121,12 @@ public class FightScene extends VBox {
 								current.magic(selectedEnemy);
 							}
 						}
+					
 					}
-					Combat.checkForDeadCharacters(players, enemies);
+					checkForDeadCharacters(players, enemies);
 					Platform.runLater(() -> drawScene());
 					pressed = false;
+
 				}
 				try {
 					Thread.sleep(500);
@@ -127,43 +147,84 @@ public class FightScene extends VBox {
 	}
 
 	private void drawScene() {
-		this.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
-		
-		canvas.getChildren().clear();
-		int xPos = 50;
-		for (GameCharacter player : players) {
-			Text first = new Text(player.getClass().getSimpleName() + " HP: " + player.getHp());
-			first.setFont(Font.font(15));
-			first.setLayoutX(xPos);
-			first.setLayoutY(50);
-			Circle rep = new Circle(20);
-			rep.setLayoutX(xPos + 10);
-			rep.setLayoutY(80);
-			canvas.getChildren().addAll(first, rep);
-			xPos += 150;
+		Image img = new Image("file:res/finalfan.png");
+		BackgroundImage bgImg = new BackgroundImage(img, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+				BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
+		this.setBackground(new Background(bgImg));
+
 	
+
+		ArrayList<Pair<Integer, Integer>> use = new ArrayList<>();
+		use.add(new Pair<>(100, 250));
+
+		use.add(new Pair<>(200, 550));
+
+		use.add(new Pair<>(250, 375));
+
+		pane.getChildren().clear();
+
+		int index = 0;
+		for (GameCharacter player : players) {
+			Text first = new Text(player.getClass().getSimpleName() +" "+" HP: " + player.getHp()+" "+" MP: "+player.getMana());
+			first.setFont(Font.font(20));
+			first.setLayoutX(use.get(index).getKey());
+			first.setLayoutY(use.get(index).getValue());
+
+			Image imgchar = new Image("file:res/yourImage.png");
+			if (player instanceof Wizard) {
+				imgchar = new Image("file:res/wizz.png");
+			}
+			ImageView rep = new ImageView(imgchar);
+			rep.setFitWidth(120);
+			rep.setFitHeight(120);
+
+			rep.setLayoutX(use.get(index).getKey());
+			rep.setLayoutY(use.get(index).getValue() + 30);
+
+			pane.getChildren().addAll(first, rep);
+
+			index++;
+
 		}
-		int yPos = 150;
-		int countS=0;
+
+		ArrayList<Pair<Integer, Integer>> enemyPos = new ArrayList<>();
+		enemyPos.add(new Pair<>(600, 250));
+
+		enemyPos.add(new Pair<>(650, 500));
+
+		enemyPos.add(new Pair<>(560, 350));
+
+		int countS = 0;
 		for (Enemy enemy : enemies) {
 			Text second = new Text("Enemy HP: " + enemy.getHp());
-			second.setFont(Font.font(15));
-			second.setLayoutX(50);
-			second.setLayoutY(yPos);
-			
-			Circle rep = new Circle(20);
-			rep.setLayoutX(50);
-			rep.setLayoutY(yPos+60);
-			final int c=countS;
-			rep.setOnMouseClicked(event->{
-				choice=c;
+			second.setFont(Font.font(20));
+			second.setLayoutX(enemyPos.get(countS).getKey());
+			second.setLayoutY(enemyPos.get(countS).getValue());
+
+			Image imgchar = new Image("file:res/up_2.png");
+			ImageView rep = new ImageView(imgchar);
+
+			rep.setFitWidth(88);
+			rep.setFitHeight(88);
+			rep.setLayoutX(enemyPos.get(countS).getKey());
+			rep.setLayoutY(enemyPos.get(countS).getValue() + 20);
+
+			final int c = countS;
+			rep.setOnMouseClicked(event -> {
+				choice = c;
 				System.out.println("Choose"+(choice+1));
+				
 			});
 
-			canvas.getChildren().addAll(second, rep);
-			yPos += 150;
+			pane.getChildren().addAll(second, rep);
+
 			countS++;
 		}
+	}
+
+	public void checkForDeadCharacters(ArrayList<GameCharacter> a, ArrayList<Enemy> b) {
+		a.removeIf(character -> character.getHp() <= 0);
+		b.removeIf(enemy -> enemy.getHp() <= 0);
 	}
 
 }

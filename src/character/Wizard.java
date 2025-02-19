@@ -28,6 +28,9 @@ public class Wizard extends GameCharacter{
 
 	@Override
 	public void magic(GameCharacter target) {
+		if(mana<=0)
+			return;
+			
 		target.setHp(target.getHp()-getMagic());
 		this.setMana(getMana()-getManaCost());
 		

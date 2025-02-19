@@ -28,7 +28,7 @@ public class Enemy extends GameCharacter {
     public void magic(GameCharacter target) {
         System.out.println(getClass().getSimpleName() + " casts a spell on " + target.getClass().getSimpleName() + " for " + getMagic() + " magic damage.");
         target.setHp(target.getHp() - getMagic()); 
-        target.setMana(target.getMana() - getMagic());  
+        setMana(target.getMana() - getMagic());  
     }
 
     public void takeAction(GameCharacter target) {

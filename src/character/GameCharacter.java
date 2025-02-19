@@ -1,11 +1,11 @@
 package character;
 
 public abstract class GameCharacter implements Comparable<GameCharacter> {
-    private int hp;
-    private int attack;
-    private int magic;
-    private int mana;
-    private int speed;
+    protected int hp;
+    protected int attack;
+    protected int magic;
+    protected int mana;
+    protected int speed;
 
    
     
