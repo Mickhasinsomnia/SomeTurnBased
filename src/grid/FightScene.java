@@ -91,18 +91,18 @@ public class FightScene extends Pane {
 						}
 
 						attackButton.setOnMouseClicked(event -> {
-							if (choice != -1) {
+							
 								pressed = true;
 								type = 1;
-							}
+							
 
 						});
 
 						magicButton.setOnMouseClicked(event -> {
-							if (choice != -1) {
+						
 								pressed = true;
 								type = 2;
-							}
+							
 						});
 						while (!pressed) {
 							try {
@@ -111,6 +111,16 @@ public class FightScene extends Pane {
 								e.printStackTrace();
 							}
 						}
+						
+						while(choice==-1) {
+							try {
+								Thread.sleep(100);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						
 						System.out.println();
 						if (choice >= 0 && choice < enemies.size()) {
 							Enemy selectedEnemy = enemies.get(choice);
@@ -213,8 +223,10 @@ public class FightScene extends Pane {
 
 			final int c = countS;
 			rep.setOnMouseClicked(event -> {
+				if(pressed) {
 				choice = c;
 				System.out.println("Choose"+(choice+1));
+				}
 				
 			});
 
