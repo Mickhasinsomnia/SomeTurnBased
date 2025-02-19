@@ -80,7 +80,9 @@ public class FightScene extends Pane {
 						}
 					} else {
 						choice = -1;
-						checkForDeadCharacters(players, enemies);
+						if (enemies.size() <= 0) {
+							Platform.exit();
+						}
 						System.out.println(current.getClass().getSimpleName() + "'s turn. Choose an enemy to attack:");
 						ArrayList<Enemy> chooseEnemy = Combat.getEnemies(enemies);
 						for (int i = 0; i < chooseEnemy.size(); i++) {
