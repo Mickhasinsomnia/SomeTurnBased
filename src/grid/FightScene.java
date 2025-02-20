@@ -34,7 +34,7 @@ public class FightScene extends Pane {
 	private int type;
 	private Stage primary;
 
-	public FightScene(ArrayList<GameCharacter> players, ArrayList<Enemy> enemies, Stage primary) {
+	public FightScene(ArrayList<GameCharacter> players, ArrayList<Enemy> enemies, Stage primary,String bg) {
 		this.players = players;
 		this.enemies = enemies;
 		this.primary=primary;
@@ -43,7 +43,7 @@ public class FightScene extends Pane {
 		this.getChildren().add(pane);
 		pressed = false;
 
-		drawScene();
+		drawScene(bg);
 
 		setButton();
 
@@ -117,7 +117,7 @@ public class FightScene extends Pane {
 						});
 					}
 					checkForDeadCharacters(players, enemies);
-					Platform.runLater(() -> drawScene());
+					Platform.runLater(() -> drawScene(bg));
 					pressed = false;
 				}
 				try {
@@ -169,8 +169,8 @@ public class FightScene extends Pane {
 		});
 	}
 
-	private void drawScene() {
-		Image img = new Image(ClassLoader.getSystemResource("finalfan.png").toString());
+	private void drawScene(String bg) {
+		Image img = new Image(ClassLoader.getSystemResource(bg).toString());
 		BackgroundImage bgImg = new BackgroundImage(img, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
 				BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
 		this.setBackground(new Background(bgImg));
@@ -189,18 +189,18 @@ public class FightScene extends Pane {
 
 	private ArrayList<Pair<Integer, Integer>> setupPlayer() {
 		ArrayList<Pair<Integer, Integer>> use = new ArrayList<>();
-		use.add(new Pair<>(100, 250));
+		use.add(new Pair<>(100, 300));
 		use.add(new Pair<>(200, 550));
 		use.add(new Pair<>(250, 375));
-		use.add(new Pair<>(360, 190));
+		use.add(new Pair<>(360, 300));
 		return use;
 	}
 
 	private ArrayList<Pair<Integer, Integer>> setupEnemy() {
 		ArrayList<Pair<Integer, Integer>> enemyPos = new ArrayList<>();
-		enemyPos.add(new Pair<>(750, 250));
-		enemyPos.add(new Pair<>(500, 500));
-		enemyPos.add(new Pair<>(600, 300));
+		enemyPos.add(new Pair<>(750, 530));
+		enemyPos.add(new Pair<>(500, 540));
+		enemyPos.add(new Pair<>(600, 350));
 		enemyPos.add(new Pair<>(700, 400));
 		return enemyPos;
 	}

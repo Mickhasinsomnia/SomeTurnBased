@@ -30,7 +30,7 @@ public class LevelSelect {
 	       enemy.add(new Enemy());
 		
 		
-		FightScene level0=new FightScene(player,enemy,primary);
+		FightScene level0=new FightScene(player,enemy,primary,"sand.png");
 		primary.getScene().setRoot(level0);
 		
 		break;
@@ -46,7 +46,7 @@ public class LevelSelect {
 		       enemy.add(new Enemy());	       
 		       enemy.add(new Enemy());	     
 
-				FightScene level1=new FightScene(player,enemy,primary);
+				FightScene level1=new FightScene(player,enemy,primary,"finalfan.png");
 				primary.getScene().setRoot(level1);
 			
 		}
