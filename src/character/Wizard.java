@@ -7,7 +7,7 @@ public class Wizard extends GameCharacter{
 		this.setHp(120);
 		this.setAttack(10);
 		setMagic(50);
-		setMana(350);
+		setMana(200);
 		setSpeed(12);
 		setManaCost(15);
 	}

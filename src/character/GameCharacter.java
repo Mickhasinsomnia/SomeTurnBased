@@ -1,15 +1,29 @@
 package character;
 
+import javafx.scene.image.ImageView;
+
 public abstract class GameCharacter implements Comparable<GameCharacter> {
     protected int hp;
     protected int attack;
     protected int magic;
     protected int mana;
     protected int speed;
-
+    protected ImageView self=new ImageView();
+    protected double Xpos;
+    protected double Ypos;
+    protected double originalX;
+    protected double originalY;
    
     
-    public GameCharacter() {
+    public ImageView getSelf() {
+		return self;
+	}
+
+	public void setSelf(ImageView self) {
+		this.self = self;
+	}
+
+	public GameCharacter() {
     	super();
 	}
 
@@ -71,5 +85,33 @@ public abstract class GameCharacter implements Comparable<GameCharacter> {
     @Override
     public String toString() {
     	return this.getClass().getSimpleName()+" "+this.getAttack();
+    }
+    
+    public void setPos(double x,double y) {
+    	this.Xpos=x;
+    	this.Ypos=y;
+    }
+    
+    public void setoriPos(double x,double y) {
+    	this.originalX=x;
+    	this.originalY=y;
+    }
+    
+    public double getoriPosX() {
+    	return originalX;
+    
+    }
+    
+    public double getoriPosY() {
+    	return originalX;
+    
+    }
+    
+    public double getPosX(){
+    	return Xpos;
+    }
+    
+    public double getPosY(){
+    	return Ypos;
     }
 }

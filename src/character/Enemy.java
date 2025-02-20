@@ -2,6 +2,8 @@ package character;
 
 public class Enemy extends GameCharacter {
 
+	protected int manacost;
+	
     public Enemy(int hp, int attack, int magic, int mana, int speed) {
         setHp(hp);
         setAttack(attack);
@@ -16,19 +18,28 @@ public class Enemy extends GameCharacter {
     	setMagic(30);
     	setMana(100);
     	setSpeed(1);
+    	setManacost(15);
     }
 
-    @Override
+    public int getManacost() {
+		return manacost;
+	}
+
+	public void setManacost(int manacost) {
+		this.manacost = manacost;
+	}
+
+	@Override
     public void attack(GameCharacter target) {
-        System.out.println(getClass().getSimpleName() + " attacks " + target.getClass().getSimpleName() + " for " + getAttack() + " damage.");
+//        System.out.println(getClass().getSimpleName() + " attacks " + target.getClass().getSimpleName() + " for " + getAttack() + " damage.");
         target.setHp(target.getHp() - getAttack());  
     }
 
     @Override
     public void magic(GameCharacter target) {
-        System.out.println(getClass().getSimpleName() + " casts a spell on " + target.getClass().getSimpleName() + " for " + getMagic() + " magic damage.");
+//        System.out.println(getClass().getSimpleName() + " casts a spell on " + target.getClass().getSimpleName() + " for " + getMagic() + " magic damage.");
         target.setHp(target.getHp() - getMagic()); 
-        setMana(target.getMana() - getMagic());  
+        setMana(getMana() - getMagic());  
     }
 
     public void takeAction(GameCharacter target) {
