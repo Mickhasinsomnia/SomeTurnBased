@@ -16,10 +16,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import application.Main;
 
 public class FightScene extends Pane {
 
@@ -29,10 +32,12 @@ public class FightScene extends Pane {
 	private boolean pressed;
 	private int choice;
 	private int type;
+	private Stage primary;
 
-	public FightScene(ArrayList<GameCharacter> players, ArrayList<Enemy> enemies) {
+	public FightScene(ArrayList<GameCharacter> players, ArrayList<Enemy> enemies, Stage primary) {
 		this.players = players;
 		this.enemies = enemies;
+		this.primary=primary;
 		pane = new Pane();
 		pane.setMinSize(700, 700);
 		this.getChildren().add(pane);
@@ -76,7 +81,9 @@ public class FightScene extends Pane {
 					} else {
 						choice = -1;
 						if (enemies.size() <= 0) {
-							Platform.exit();
+							Platform.runLater(() -> {
+								primary.getScene().setRoot(Main.menu);
+							});
 						}
 						Platform.runLater(() -> {
 							onHead.setLayoutX(current.getPosX() - 20);
@@ -119,7 +126,9 @@ public class FightScene extends Pane {
 					e.printStackTrace();
 				}
 			}
-			Platform.exit();
+			Platform.runLater(() -> {
+				primary.getScene().setRoot(Main.menu);
+			});
 		});
 		combatThread.start();
 	}
@@ -127,17 +136,22 @@ public class FightScene extends Pane {
 	private void setButton() {
 		Button attackButton = new Button("Attack");
 		Button magicButton = new Button("Magic");
+		
+		Button returnMenu = new Button("return to menu");
 
 		attackButton.setLayoutX(700);
 		attackButton.setLayoutY(650);
 		magicButton.setLayoutX(800);
 		magicButton.setLayoutY(650);
+		returnMenu.setLayoutX(500);
+		returnMenu.setLayoutY(650);
 
 		magicButton.setMinSize(60, 40);
 		attackButton.setMinSize(60, 40);
+		returnMenu.setMinSize(60, 40);
 
-		this.getChildren().addAll(attackButton,magicButton);
-		
+		this.getChildren().addAll(attackButton, magicButton,returnMenu);
+
 		attackButton.setOnMouseClicked(event -> {
 			pressed = true;
 			type = 1;
@@ -146,6 +160,12 @@ public class FightScene extends Pane {
 		magicButton.setOnMouseClicked(event -> {
 			pressed = true;
 			type = 2;
+		});
+		
+		returnMenu.setOnMouseClicked(event -> {
+			Platform.runLater(() -> {
+				primary.getScene().setRoot(Main.menu);
+			});
 		});
 	}
 
@@ -179,11 +199,8 @@ public class FightScene extends Pane {
 	private ArrayList<Pair<Integer, Integer>> setupEnemy() {
 		ArrayList<Pair<Integer, Integer>> enemyPos = new ArrayList<>();
 		enemyPos.add(new Pair<>(750, 250));
-
 		enemyPos.add(new Pair<>(500, 500));
-
 		enemyPos.add(new Pair<>(600, 300));
-
 		enemyPos.add(new Pair<>(700, 400));
 		return enemyPos;
 	}
