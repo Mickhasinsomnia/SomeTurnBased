@@ -1,8 +1,5 @@
 package character;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-
 public abstract class GameCharacter implements Comparable<GameCharacter> {
 	protected int hp;
 	protected int attack;
@@ -75,7 +72,7 @@ public abstract class GameCharacter implements Comparable<GameCharacter> {
 
 	@Override
 	public int compareTo(GameCharacter other) {
-		return Integer.compare(this.speed, other.speed);
+		return Integer.compare(other.speed, this.speed);
 	}
 
 	@Override

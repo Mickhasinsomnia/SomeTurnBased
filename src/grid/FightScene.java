@@ -48,19 +48,7 @@ public class FightScene extends Pane {
 
 		drawScene();
 
-		Button attackButton = new Button("Attack");
-		Button magicButton = new Button("Magic");
-
-		attackButton.setLayoutX(700);
-		attackButton.setLayoutY(650);
-		magicButton.setLayoutX(800);
-		magicButton.setLayoutY(650);
-
-		magicButton.setMinSize(60, 40);
-		attackButton.setMinSize(60, 40);
-
-		this.getChildren().add(attackButton);
-		this.getChildren().add(magicButton);
+		setButton();
 
 		Thread combatThread = new Thread(() -> {
 			while (players.size() > 0 && enemies.size() > 0) {
@@ -73,9 +61,13 @@ public class FightScene extends Pane {
 				for (GameCharacter current : all) {
 					if (current.getHp() <= 0)
 						continue;
-
 					if (current instanceof Enemy) {
-
+						try {
+							Thread.sleep(2500);
+						} catch (InterruptedException e) {
+							
+							e.printStackTrace();
+						}
 						Enemy enemy = (Enemy) current;
 						onHead2.setLayoutX(enemy.getPosX());
 						onHead2.setLayoutY(current.getPosY());
@@ -86,19 +78,10 @@ public class FightScene extends Pane {
 								alivePlayers.add(player);
 							}
 						}
-						Platform.runLater(() -> {
-							this.getChildren().remove(onHead);
-						});
 
 						if (!alivePlayers.isEmpty()) {
-							int min = 0;
-							for (int i = 1; i < alivePlayers.size(); i++) {
-								if (alivePlayers.get(i).getHp() < alivePlayers.get(min).getHp())
-									min = i;
-							}
-							GameCharacter target = alivePlayers.get(min);
-							enemy.takeAction(target);
-							checkForDeadCharacters(players, enemies);
+							enemy.chooseTarget(alivePlayers);
+
 						}
 					} else {
 						choice = -1;
@@ -113,15 +96,6 @@ public class FightScene extends Pane {
 							this.getChildren().add(onHead);
 						});
 
-						attackButton.setOnMouseClicked(event -> {
-							pressed = true;
-							type = 1;
-						});
-
-						magicButton.setOnMouseClicked(event -> {
-							pressed = true;
-							type = 2;
-						});
 						while (!pressed) {
 							try {
 								Thread.sleep(100);
@@ -139,20 +113,18 @@ public class FightScene extends Pane {
 							}
 						}
 
-						if (choice >= 0 && choice < enemies.size()) {
-							Enemy selectedEnemy = enemies.get(choice);
-							int damageAction = type;
-							if (damageAction == 1) {
-								current.attack(selectedEnemy);
+						Enemy selectedEnemy = enemies.get(choice);
+						int damageAction = type;
+						if (damageAction == 1) {
+							current.attack(selectedEnemy);
 
-							} else if (damageAction == 2) {
-								current.magic(selectedEnemy);
-							}
+						} else if (damageAction == 2) {
+							current.magic(selectedEnemy);
 						}
+
 						Platform.runLater(() -> {
 							this.getChildren().remove(onHead);
 						});
-						checkForDeadCharacters(players, enemies);
 
 					}
 					checkForDeadCharacters(players, enemies);
@@ -166,20 +138,39 @@ public class FightScene extends Pane {
 					e.printStackTrace();
 				}
 			}
-//			if (players.size() > enemies.size()) {
-//				System.out.println("We win");
-//			} else {
-//				System.out.println("Try again");
-//			}
 			Platform.exit();
-
 		});
-
 		combatThread.start();
 	}
 
+	private void setButton() {
+		Button attackButton = new Button("Attack");
+		Button magicButton = new Button("Magic");
+
+		attackButton.setLayoutX(700);
+		attackButton.setLayoutY(650);
+		magicButton.setLayoutX(800);
+		magicButton.setLayoutY(650);
+
+		magicButton.setMinSize(60, 40);
+		attackButton.setMinSize(60, 40);
+
+		this.getChildren().add(attackButton);
+		this.getChildren().add(magicButton);
+
+		attackButton.setOnMouseClicked(event -> {
+			pressed = true;
+			type = 1;
+		});
+
+		magicButton.setOnMouseClicked(event -> {
+			pressed = true;
+			type = 2;
+		});
+	}
+
 	private void drawScene() {
-		Image img = new Image("file:res/finalfan.png");
+		Image img = new Image(ClassLoader.getSystemResource("finalfan.png").toString());
 		BackgroundImage bgImg = new BackgroundImage(img, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
 				BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
 		this.setBackground(new Background(bgImg));
@@ -236,7 +227,7 @@ public class FightScene extends Pane {
 			second.setLayoutX(enemyPos.get(countS).getKey());
 			second.setLayoutY(enemyPos.get(countS).getValue());
 
-			Image imgchar = new Image("file:res/up_2.png");
+			Image imgchar = new Image(ClassLoader.getSystemResource("up_2.png").toString());
 			ImageView rep = new ImageView(imgchar);
 
 			rep.setFitWidth(88);

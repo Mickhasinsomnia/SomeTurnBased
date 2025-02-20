@@ -34,12 +34,12 @@ public class Main extends Application {
        ArrayList<Enemy>enemy=new ArrayList<>();
 //       
        enemy.add(new Enemy());
-//       
-//       enemy.add(new Enemy());
-//       
-//       enemy.add(new Enemy());
-//       
-//       enemy.add(new Enemy());
+       
+       enemy.add(new Enemy());
+       
+       enemy.add(new Enemy());
+       
+       enemy.add(new Enemy());
        
        
        

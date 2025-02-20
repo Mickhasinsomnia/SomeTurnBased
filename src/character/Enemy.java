@@ -1,5 +1,7 @@
 package character;
 
+import java.util.ArrayList;
+
 public class Enemy extends GameCharacter {
 
 	protected int manacost;
@@ -29,26 +31,34 @@ public class Enemy extends GameCharacter {
 		this.manacost = manacost;
 	}
 
-	@Override
-    public void attack(GameCharacter target) {
-//        System.out.println(getClass().getSimpleName() + " attacks " + target.getClass().getSimpleName() + " for " + getAttack() + " damage.");
-        target.setHp(target.getHp() - getAttack());  
+	
+    public void chooseTarget(ArrayList<GameCharacter> target) {
+		int min = 0;
+		for (int i = 1; i < target.size(); i++) {
+			if (target.get(i).getHp() < target.get(min).getHp())
+				min = i;
+		}
+		GameCharacter choosenTarget = target.get(min);
+		this.takeAction(choosenTarget); 
     }
 
     @Override
     public void magic(GameCharacter target) {
-//        System.out.println(getClass().getSimpleName() + " casts a spell on " + target.getClass().getSimpleName() + " for " + getMagic() + " magic damage.");
         target.setHp(target.getHp() - getMagic()); 
-        setMana(getMana() - getMagic());  
+        setMana(getMana() - getManacost());  
     }
 
     public void takeAction(GameCharacter target) {
         double actionChoice = Math.random();
-
         if (actionChoice < 0.5) {
             attack(target); 
         } else {
             magic(target); 
         }
     }
+
+	@Override
+	public void attack(GameCharacter target) {
+		target.setHp(target.getHp()-getAttack());
+	}
 }
