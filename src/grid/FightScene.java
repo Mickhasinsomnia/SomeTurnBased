@@ -7,7 +7,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
-
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -22,6 +22,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.Pair;
 
@@ -70,9 +71,9 @@ public class FightScene extends Pane {
 				Circle onHead = new Circle(20);
 				Circle onHead2 = new Circle(20);
 				for (GameCharacter current : all) {
-					if(current.getHp()<=0)
+					if (current.getHp() <= 0)
 						continue;
-					
+
 					if (current instanceof Enemy) {
 
 						Enemy enemy = (Enemy) current;
@@ -90,18 +91,18 @@ public class FightScene extends Pane {
 						});
 
 						if (!alivePlayers.isEmpty()) {
-							int min=0;
-							for(int i=1;i<alivePlayers.size();i++) {
-								if(alivePlayers.get(i).getHp()<alivePlayers.get(min).getHp())
-									min=i;
+							int min = 0;
+							for (int i = 1; i < alivePlayers.size(); i++) {
+								if (alivePlayers.get(i).getHp() < alivePlayers.get(min).getHp())
+									min = i;
 							}
-							GameCharacter target=alivePlayers.get(min);
+							GameCharacter target = alivePlayers.get(min);
 							enemy.takeAction(target);
 							checkForDeadCharacters(players, enemies);
 						}
 					} else {
 						choice = -1;
-						
+
 						if (enemies.size() <= 0) {
 							Platform.exit();
 						}
@@ -137,7 +138,7 @@ public class FightScene extends Pane {
 								e.printStackTrace();
 							}
 						}
-						
+
 						if (choice >= 0 && choice < enemies.size()) {
 							Enemy selectedEnemy = enemies.get(choice);
 							int damageAction = type;
@@ -165,11 +166,11 @@ public class FightScene extends Pane {
 					e.printStackTrace();
 				}
 			}
-			if (players.size() > enemies.size()) {
-				System.out.println("We win");
-			} else {
-				System.out.println("Try again");
-			}
+//			if (players.size() > enemies.size()) {
+//				System.out.println("We win");
+//			} else {
+//				System.out.println("Try again");
+//			}
 			Platform.exit();
 
 		});
@@ -202,18 +203,14 @@ public class FightScene extends Pane {
 			first.setLayoutX(use.get(index).getKey());
 			first.setLayoutY(use.get(index).getValue());
 
-			Image imgchar = new Image("file:res/yourImage.png");
-			if (player instanceof Wizard) {
-				imgchar = new Image("file:res/wizz.png");
-			}
+			Image imgchar = new Image(player.getSelf());
+
 			ImageView rep = new ImageView(imgchar);
 			rep.setFitWidth(120);
 			rep.setFitHeight(120);
 
 			rep.setLayoutX(use.get(index).getKey());
 			rep.setLayoutY(use.get(index).getValue() + 30);
-
-			player.setSelf(new ImageView(imgchar));
 
 			player.setPos(rep.getLayoutX(), rep.getLayoutY());
 
@@ -255,7 +252,6 @@ public class FightScene extends Pane {
 				}
 
 			});
-			enemy.setSelf(rep);
 
 			enemy.setPos(rep.getLayoutX(), rep.getLayoutY());
 			pane.getChildren().addAll(second, rep);

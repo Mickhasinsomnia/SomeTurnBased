@@ -1,5 +1,6 @@
 package character;
 
+
 public class Swordman extends GameCharacter {
 
 	public Swordman() {
@@ -8,7 +9,7 @@ public class Swordman extends GameCharacter {
 		setMagic(0);
 		setMana(0);
 		setSpeed(10);
-		
+		self=ClassLoader.getSystemResource("swordman.png").toString();
 	}
 	@Override
 	public void attack(GameCharacter target) {

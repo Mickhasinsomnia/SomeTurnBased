@@ -1,5 +1,6 @@
 package character;
 
+
 public class Wizard extends GameCharacter{
 	protected int manaCost;
 	
@@ -10,6 +11,7 @@ public class Wizard extends GameCharacter{
 		setMana(200);
 		setSpeed(12);
 		setManaCost(15);
+		self=ClassLoader.getSystemResource("wizz.png").toString();
 	}
 
 	public int getManaCost() {

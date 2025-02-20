@@ -13,6 +13,7 @@ import javafx.stage.WindowEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.application.Platform;
 
@@ -34,22 +35,20 @@ public class Main extends Application {
 //       
        enemy.add(new Enemy());
 //       
-       enemy.add(new Enemy());
+//       enemy.add(new Enemy());
+//       
+//       enemy.add(new Enemy());
+//       
+//       enemy.add(new Enemy());
        
-       enemy.add(new Enemy());
-       
-       enemy.add(new Enemy());
        
        
        FightScene use=new FightScene(player,enemy);
        
+      
+      Scene ans=new Scene(use,900,700);
        
-       
-       StackPane root=new StackPane();
-       root.getChildren().add(use);
-       Scene ans=new Scene(root,900,700);
-       
-       primaryStage.setScene(ans);
+      primaryStage.setScene(ans);
 
       primaryStage.show();
        
