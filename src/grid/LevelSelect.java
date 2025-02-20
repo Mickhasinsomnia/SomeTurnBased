@@ -13,7 +13,7 @@ public class LevelSelect {
 	
 	public static void Level(int level,Stage primary) {
 		switch (level) {
-		case 0:{
+		case 1:{
 			ArrayList<GameCharacter>player=new ArrayList<>();
 	       
 		   player.add(new Swordman());
@@ -35,7 +35,7 @@ public class LevelSelect {
 		
 		break;
 		}
-		case 1:{
+		case 2:{
 			
 			ArrayList<GameCharacter>player=new ArrayList<>();
 		       

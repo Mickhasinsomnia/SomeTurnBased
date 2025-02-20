@@ -14,30 +14,22 @@ import javafx.scene.text.FontWeight;
 
 public class Main extends Application {
    
-    
+    private Stage primary;
     public static VBox menu;
     
     @Override
     public void start(Stage primaryStage) {
        
-    	Button startButton=setButton("Level 1");
-    	Button startButton2=setButton("Level 2");
-        
+    	Button startButton=setButton(1);
+    	Button startButton2=setButton(2);
+        primary=primaryStage;
         
         VBox root = new VBox(20); 
         root.setAlignment(Pos.CENTER); 
         root.getChildren().addAll(startButton, startButton2);
-        
         Main.menu=root;
        
-       startButton.setOnMouseClicked(e->{
-    	   LevelSelect.Level(0, primaryStage);
-       });
        
-       startButton2.setOnMouseClicked(e->{
-    	   LevelSelect.Level(1, primaryStage);
-       });
-
        
        Scene scene = new Scene(root, 900, 700); 
        primaryStage.setTitle("Start Game");
@@ -56,11 +48,14 @@ public class Main extends Application {
     	launch(args);
     }
     
-    private Button setButton(String name) {
-    	Button startButton = new Button(name);
+    private Button setButton(int level) {
+    	Button startButton = new Button("Level "+level);
         startButton.setFont(Font.font("Arial", FontWeight.BOLD, 24)); 
         startButton.setMinWidth(200);  
         startButton.setMinHeight(50);
+        startButton.setOnMouseClicked(e->{
+     	   LevelSelect.Level(level, primary);
+        });
     	return startButton;
     }
 }
