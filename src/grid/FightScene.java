@@ -1,13 +1,8 @@
 package grid;
 
 import character.*;
-import combat.Combat;
 import character.Enemy;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,12 +13,9 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import javafx.util.Duration;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
@@ -65,7 +57,6 @@ public class FightScene extends Pane {
 						try {
 							Thread.sleep(2500);
 						} catch (InterruptedException e) {
-							
 							e.printStackTrace();
 						}
 						Enemy enemy = (Enemy) current;
@@ -81,21 +72,17 @@ public class FightScene extends Pane {
 
 						if (!alivePlayers.isEmpty()) {
 							enemy.chooseTarget(alivePlayers);
-
 						}
 					} else {
 						choice = -1;
-
 						if (enemies.size() <= 0) {
 							Platform.exit();
 						}
-
 						Platform.runLater(() -> {
 							onHead.setLayoutX(current.getPosX() - 20);
 							onHead.setLayoutY(current.getPosY() + 60);
 							this.getChildren().add(onHead);
 						});
-
 						while (!pressed) {
 							try {
 								Thread.sleep(100);
@@ -103,7 +90,6 @@ public class FightScene extends Pane {
 								e.printStackTrace();
 							}
 						}
-
 						while (choice == -1) {
 							try {
 								Thread.sleep(100);
@@ -112,25 +98,20 @@ public class FightScene extends Pane {
 								e.printStackTrace();
 							}
 						}
-
 						Enemy selectedEnemy = enemies.get(choice);
 						int damageAction = type;
 						if (damageAction == 1) {
 							current.attack(selectedEnemy);
-
 						} else if (damageAction == 2) {
 							current.magic(selectedEnemy);
 						}
-
 						Platform.runLater(() -> {
 							this.getChildren().remove(onHead);
 						});
-
 					}
 					checkForDeadCharacters(players, enemies);
 					Platform.runLater(() -> drawScene());
 					pressed = false;
-
 				}
 				try {
 					Thread.sleep(500);
@@ -155,9 +136,8 @@ public class FightScene extends Pane {
 		magicButton.setMinSize(60, 40);
 		attackButton.setMinSize(60, 40);
 
-		this.getChildren().add(attackButton);
-		this.getChildren().add(magicButton);
-
+		this.getChildren().addAll(attackButton,magicButton);
+		
 		attackButton.setOnMouseClicked(event -> {
 			pressed = true;
 			type = 1;
@@ -175,42 +155,28 @@ public class FightScene extends Pane {
 				BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
 		this.setBackground(new Background(bgImg));
 
-		ArrayList<Pair<Integer, Integer>> use = new ArrayList<>();
-		use.add(new Pair<>(100, 250));
-
-		use.add(new Pair<>(200, 550));
-
-		use.add(new Pair<>(250, 375));
-
-		use.add(new Pair<>(360, 190));
-
 		pane.getChildren().clear();
 
-		int index = 0;
-		for (GameCharacter player : players) {
-			Text first = new Text(player.getClass().getSimpleName() + " " + " HP: " + player.getHp() + " " + " MP: "
-					+ player.getMana());
-			first.setFont(Font.font(20));
-			first.setLayoutX(use.get(index).getKey());
-			first.setLayoutY(use.get(index).getValue());
+		drawPlayer();
+		drawEnemy();
 
-			Image imgchar = new Image(player.getSelf());
+	}
 
-			ImageView rep = new ImageView(imgchar);
-			rep.setFitWidth(120);
-			rep.setFitHeight(120);
+	public void checkForDeadCharacters(ArrayList<GameCharacter> a, ArrayList<Enemy> b) {
+		a.removeIf(character -> character.getHp() <= 0);
+		b.removeIf(enemy -> enemy.getHp() <= 0);
+	}
 
-			rep.setLayoutX(use.get(index).getKey());
-			rep.setLayoutY(use.get(index).getValue() + 30);
+	private ArrayList<Pair<Integer, Integer>> setupPlayer() {
+		ArrayList<Pair<Integer, Integer>> use = new ArrayList<>();
+		use.add(new Pair<>(100, 250));
+		use.add(new Pair<>(200, 550));
+		use.add(new Pair<>(250, 375));
+		use.add(new Pair<>(360, 190));
+		return use;
+	}
 
-			player.setPos(rep.getLayoutX(), rep.getLayoutY());
-
-			pane.getChildren().addAll(first, rep);
-
-			index++;
-
-		}
-
+	private ArrayList<Pair<Integer, Integer>> setupEnemy() {
 		ArrayList<Pair<Integer, Integer>> enemyPos = new ArrayList<>();
 		enemyPos.add(new Pair<>(750, 250));
 
@@ -219,6 +185,38 @@ public class FightScene extends Pane {
 		enemyPos.add(new Pair<>(600, 300));
 
 		enemyPos.add(new Pair<>(700, 400));
+		return enemyPos;
+	}
+
+	private void drawPlayer() {
+		ArrayList<Pair<Integer, Integer>> pos = setupPlayer();
+		int index = 0;
+		for (GameCharacter player : players) {
+			Text first = new Text(player.getClass().getSimpleName() + " " + " HP: " + player.getHp() + " " + " MP: "
+					+ player.getMana());
+			first.setFont(Font.font(20));
+			first.setLayoutX(pos.get(index).getKey());
+			first.setLayoutY(pos.get(index).getValue());
+
+			Image imgchar = new Image(player.getSelf());
+
+			ImageView rep = new ImageView(imgchar);
+			rep.setFitWidth(120);
+			rep.setFitHeight(120);
+
+			rep.setLayoutX(pos.get(index).getKey());
+			rep.setLayoutY(pos.get(index).getValue() + 30);
+
+			player.setPos(rep.getLayoutX(), rep.getLayoutY());
+
+			pane.getChildren().addAll(first, rep);
+
+			index++;
+		}
+	}
+
+	public void drawEnemy() {
+		ArrayList<Pair<Integer, Integer>> enemyPos = setupEnemy();
 
 		int countS = 0;
 		for (Enemy enemy : enemies) {
@@ -239,20 +237,11 @@ public class FightScene extends Pane {
 			rep.setOnMouseClicked(event -> {
 				if (pressed) {
 					choice = c;
-//					System.out.println("Choose" + (choice + 1));
 				}
-
 			});
-
 			enemy.setPos(rep.getLayoutX(), rep.getLayoutY());
 			pane.getChildren().addAll(second, rep);
 			countS++;
 		}
 	}
-
-	public void checkForDeadCharacters(ArrayList<GameCharacter> a, ArrayList<Enemy> b) {
-		a.removeIf(character -> character.getHp() <= 0);
-		b.removeIf(enemy -> enemy.getHp() <= 0);
-	}
-
 }
