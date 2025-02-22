@@ -37,6 +37,7 @@ public class FightScene extends Pane {
 	private int choice;
 	private int type;
 	private Stage primary;
+	private final Object dummy = new Object();
 //	private MediaPlayer p;
 
 	public FightScene(ArrayList<GameCharacter> players, ArrayList<Enemy> enemies, Stage primary, String bg) {
@@ -96,21 +97,24 @@ public class FightScene extends Pane {
 							onHead.setLayoutY(current.getPosY() + 60);
 							this.getChildren().add(onHead);
 						});
-						while (!pressed) {
-							try {
-								Thread.sleep(100);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
+						synchronized (dummy) { 
+						    while (!pressed) {
+						        try {
+						            dummy.wait(100);
+						        } catch (InterruptedException e) {
+						            e.printStackTrace();
+						        }
+						    }
+
+						    while (choice == -1) {
+						        try {
+						            dummy.wait(100); 
+						        } catch (InterruptedException e) {
+						            e.printStackTrace();
+						        }
+						    }
 						}
-						while (choice == -1) {
-							try {
-								Thread.sleep(100);
-							} catch (InterruptedException e) {
-								
-								e.printStackTrace();
-							}
-						}
+
 						Enemy selectedEnemy = enemies.get(choice);
 						int damageAction = type;
 						
@@ -301,7 +305,6 @@ public class FightScene extends Pane {
 	    shakeTransition.play();
 	    try {
 	    	Thread.sleep(1500);
-	    
 	    }
 	    catch (InterruptedException e) {
 	        e.printStackTrace();

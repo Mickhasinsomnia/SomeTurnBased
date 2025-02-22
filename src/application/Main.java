@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import grid.LevelSelect;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -42,6 +43,11 @@ public class Main extends Application {
 		primaryStage.show();
 
 		primaryStage.setResizable(false);
+		primaryStage.setOnCloseRequest(event -> {
+  
+            System.out.println("Window closed!");
+           System.exit(0);
+        });
 	}
 
 	public static void main(String[] args) {
