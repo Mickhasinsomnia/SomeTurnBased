@@ -13,6 +13,8 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -33,11 +35,12 @@ public class FightScene extends Pane {
 	private int choice;
 	private int type;
 	private Stage primary;
+	private MediaPlayer p;
 
-	public FightScene(ArrayList<GameCharacter> players, ArrayList<Enemy> enemies, Stage primary,String bg) {
+	public FightScene(ArrayList<GameCharacter> players, ArrayList<Enemy> enemies, Stage primary, String bg) {
 		this.players = players;
 		this.enemies = enemies;
-		this.primary=primary;
+		this.primary = primary;
 		pane = new Pane();
 		pane.setMinSize(700, 700);
 		this.getChildren().add(pane);
@@ -48,6 +51,9 @@ public class FightScene extends Pane {
 		setButton();
 
 		Thread combatThread = new Thread(() -> {
+			Media sound = new Media(ClassLoader.getSystemResource("sound.mp3").toString());
+			p = new MediaPlayer(sound);
+			p.play();
 			while (players.size() > 0 && enemies.size() > 0) {
 				ArrayList<GameCharacter> all = new ArrayList<>();
 				all.addAll(players);
@@ -60,7 +66,7 @@ public class FightScene extends Pane {
 						continue;
 					if (current instanceof Enemy) {
 						try {
-							Thread.sleep(2500);
+							Thread.sleep(500);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
@@ -81,6 +87,7 @@ public class FightScene extends Pane {
 					} else {
 						choice = -1;
 						if (enemies.size() <= 0) {
+							p.stop();
 							Platform.runLater(() -> {
 								primary.getScene().setRoot(Main.menu);
 							});
@@ -126,6 +133,7 @@ public class FightScene extends Pane {
 					e.printStackTrace();
 				}
 			}
+			p.stop();
 			Platform.runLater(() -> {
 				primary.getScene().setRoot(Main.menu);
 			});
@@ -136,7 +144,7 @@ public class FightScene extends Pane {
 	private void setButton() {
 		Button attackButton = new Button("Attack");
 		Button magicButton = new Button("Magic");
-		
+
 		Button returnMenu = new Button("return to menu");
 
 		attackButton.setLayoutX(700);
@@ -150,7 +158,7 @@ public class FightScene extends Pane {
 		attackButton.setMinSize(60, 40);
 		returnMenu.setMinSize(60, 40);
 
-		this.getChildren().addAll(attackButton, magicButton,returnMenu);
+		this.getChildren().addAll(attackButton, magicButton, returnMenu);
 
 		attackButton.setOnMouseClicked(event -> {
 			pressed = true;
@@ -161,8 +169,9 @@ public class FightScene extends Pane {
 			pressed = true;
 			type = 2;
 		});
-		
+
 		returnMenu.setOnMouseClicked(event -> {
+			p.stop();
 			Platform.runLater(() -> {
 				primary.getScene().setRoot(Main.menu);
 			});
@@ -191,7 +200,7 @@ public class FightScene extends Pane {
 		ArrayList<Pair<Integer, Integer>> use = new ArrayList<>();
 		use.add(new Pair<>(100, 300));
 		use.add(new Pair<>(200, 550));
-		use.add(new Pair<>(250, 375));
+		use.add(new Pair<>(200, 420));
 		use.add(new Pair<>(360, 300));
 		return use;
 	}
@@ -222,7 +231,7 @@ public class FightScene extends Pane {
 			rep.setFitHeight(120);
 
 			rep.setLayoutX(pos.get(index).getKey());
-			rep.setLayoutY(pos.get(index).getValue() + 30);
+			rep.setLayoutY(pos.get(index).getValue() + 20);
 
 			player.setPos(rep.getLayoutX(), rep.getLayoutY());
 

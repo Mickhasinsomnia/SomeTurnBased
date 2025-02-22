@@ -31,6 +31,7 @@ public class LevelSelect {
 		
 		
 		FightScene level0=new FightScene(player,enemy,primary,"sand.png");
+		
 		primary.getScene().setRoot(level0);
 		
 		break;
