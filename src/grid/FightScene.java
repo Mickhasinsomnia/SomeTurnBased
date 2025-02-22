@@ -80,7 +80,6 @@ public class FightScene extends Pane {
 								alivePlayers.add(player);
 							}
 						}
-
 						if (!alivePlayers.isEmpty()) {
 							enemy.chooseTarget(alivePlayers);
 						}
@@ -114,44 +113,19 @@ public class FightScene extends Pane {
 						}
 						Enemy selectedEnemy = enemies.get(choice);
 						int damageAction = type;
-						if (damageAction == 1) {
 						
+						if (damageAction == 1) {
 						    double deltaX = selectedEnemy.getPosX() - current.getPosX();
 						    double deltaY = selectedEnemy.getPosY()-current.getPosY();
-
-						    TranslateTransition transition = new TranslateTransition(Duration.seconds(1.5), current.getImg());
-						    transition.setByX(deltaX); 
-						    transition.setByY(deltaY);  
-						    transition.play();
-
-					
-						    try {
-						        Thread.sleep(1500);
-						    } catch (InterruptedException e) {
-						        e.printStackTrace();
-						    }
-		
+						    moveToAttack(deltaX, deltaY,current.getImg());
+						    current.attack(selectedEnemy);
 						}
-
+						
 						else if (damageAction == 2) {
-							
-							TranslateTransition shakeTransition = new TranslateTransition(Duration.seconds(0.5), selectedEnemy.getImg());
-						    shakeTransition.setByX(10); 
-						    shakeTransition.setAutoReverse(true); 
-						    shakeTransition.play();
-						    
-						    try {
-						    	Thread.sleep(1500);
-						    
-						    }
-						    catch (InterruptedException e) {
-						        e.printStackTrace();
-						    }
-						    
-						    
+							magicMove(selectedEnemy.getImg());
 						    current.magic(selectedEnemy);
-
 						}
+						
 						Platform.runLater(() -> {
 							this.getChildren().remove(onHead);
 						});
@@ -166,19 +140,10 @@ public class FightScene extends Pane {
 					e.printStackTrace();
 				}
 			}
-//			p.stop();
 			Platform.runLater(() -> {
 				primary.getScene().setRoot(Main.menu);
 			});
 		});
-		
-	
-
-		
-		
-		
-		
-		
 		combatThread.start();
 	}
 
@@ -315,5 +280,31 @@ public class FightScene extends Pane {
 			pane.getChildren().addAll(second, rep);
 			countS++;
 		}
+	}
+	
+	private void moveToAttack(double deltaX,double deltaY,ImageView img) {
+	    TranslateTransition transition = new TranslateTransition(Duration.seconds(1.5), img);
+	    transition.setByX(deltaX); 
+	    transition.setByY(deltaY);  
+	    transition.play();
+	    try {
+	        Thread.sleep(1500);
+	    } catch (InterruptedException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	private void magicMove(ImageView view) {
+		TranslateTransition shakeTransition = new TranslateTransition(Duration.seconds(0.5), view);
+	    shakeTransition.setByX(10); 
+	    shakeTransition.setAutoReverse(true); 
+	    shakeTransition.play();
+	    try {
+	    	Thread.sleep(1500);
+	    
+	    }
+	    catch (InterruptedException e) {
+	        e.printStackTrace();
+	    }
 	}
 }

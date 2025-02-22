@@ -48,12 +48,14 @@ public class Enemy extends GameCharacter {
         setMana(getMana() - getManacost());  
     }
 
-    public void takeAction(GameCharacter target) {
+    public String takeAction(GameCharacter target) {
         double actionChoice = Math.random();
         if (actionChoice < 0.5) {
-            attack(target); 
+            attack(target);
+            return "attack";
         } else {
             magic(target); 
+            return "magic";
         }
     }
 
