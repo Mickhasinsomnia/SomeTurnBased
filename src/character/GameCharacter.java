@@ -1,5 +1,7 @@
 package character;
 
+import javafx.scene.image.ImageView;
+
 public abstract class GameCharacter implements Comparable<GameCharacter> {
 	protected int hp;
 	protected int attack;
@@ -11,6 +13,15 @@ public abstract class GameCharacter implements Comparable<GameCharacter> {
 	protected double Ypos;
 	protected double originalX;
 	protected double originalY;
+	protected ImageView img;
+
+	public ImageView getImg() {
+		return img;
+	}
+
+	public void setImg(ImageView img) {
+		this.img = img;
+	}
 
 	public String getSelf() {
 		return self;

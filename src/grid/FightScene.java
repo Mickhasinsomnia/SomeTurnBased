@@ -2,6 +2,7 @@ package grid;
 
 import character.*;
 import character.Enemy;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -19,6 +20,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
@@ -35,7 +37,7 @@ public class FightScene extends Pane {
 	private int choice;
 	private int type;
 	private Stage primary;
-	private MediaPlayer p;
+//	private MediaPlayer p;
 
 	public FightScene(ArrayList<GameCharacter> players, ArrayList<Enemy> enemies, Stage primary, String bg) {
 		this.players = players;
@@ -51,16 +53,16 @@ public class FightScene extends Pane {
 		setButton();
 
 		Thread combatThread = new Thread(() -> {
-			Media sound = new Media(ClassLoader.getSystemResource("sound.mp3").toString());
-			p = new MediaPlayer(sound);
-			p.play();
+//			Media sound = new Media(ClassLoader.getSystemResource("sound.mp3").toString());
+//			p = new MediaPlayer(sound);
+//			p.play();
 			while (players.size() > 0 && enemies.size() > 0) {
 				ArrayList<GameCharacter> all = new ArrayList<>();
 				all.addAll(players);
 				all.addAll(enemies);
 				Collections.sort(all);
 				Circle onHead = new Circle(20);
-				Circle onHead2 = new Circle(20);
+
 				for (GameCharacter current : all) {
 					if (current.getHp() <= 0)
 						continue;
@@ -71,8 +73,6 @@ public class FightScene extends Pane {
 							e.printStackTrace();
 						}
 						Enemy enemy = (Enemy) current;
-						onHead2.setLayoutX(enemy.getPosX());
-						onHead2.setLayoutY(current.getPosY());
 
 						ArrayList<GameCharacter> alivePlayers = new ArrayList<>();
 						for (GameCharacter player : players) {
@@ -87,7 +87,7 @@ public class FightScene extends Pane {
 					} else {
 						choice = -1;
 						if (enemies.size() <= 0) {
-							p.stop();
+//							p.stop();
 							Platform.runLater(() -> {
 								primary.getScene().setRoot(Main.menu);
 							});
@@ -108,16 +108,49 @@ public class FightScene extends Pane {
 							try {
 								Thread.sleep(100);
 							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
+								
 								e.printStackTrace();
 							}
 						}
 						Enemy selectedEnemy = enemies.get(choice);
 						int damageAction = type;
 						if (damageAction == 1) {
-							current.attack(selectedEnemy);
-						} else if (damageAction == 2) {
-							current.magic(selectedEnemy);
+						
+						    double deltaX = selectedEnemy.getPosX() - current.getPosX();
+						    double deltaY = selectedEnemy.getPosY()-current.getPosY();
+
+						    TranslateTransition transition = new TranslateTransition(Duration.seconds(1.5), current.getImg());
+						    transition.setByX(deltaX); 
+						    transition.setByY(deltaY);  
+						    transition.play();
+
+					
+						    try {
+						        Thread.sleep(1500);
+						    } catch (InterruptedException e) {
+						        e.printStackTrace();
+						    }
+		
+						}
+
+						else if (damageAction == 2) {
+							
+							TranslateTransition shakeTransition = new TranslateTransition(Duration.seconds(0.5), selectedEnemy.getImg());
+						    shakeTransition.setByX(10); 
+						    shakeTransition.setAutoReverse(true); 
+						    shakeTransition.play();
+						    
+						    try {
+						    	Thread.sleep(1500);
+						    
+						    }
+						    catch (InterruptedException e) {
+						        e.printStackTrace();
+						    }
+						    
+						    
+						    current.magic(selectedEnemy);
+
 						}
 						Platform.runLater(() -> {
 							this.getChildren().remove(onHead);
@@ -133,11 +166,19 @@ public class FightScene extends Pane {
 					e.printStackTrace();
 				}
 			}
-			p.stop();
+//			p.stop();
 			Platform.runLater(() -> {
 				primary.getScene().setRoot(Main.menu);
 			});
 		});
+		
+	
+
+		
+		
+		
+		
+		
 		combatThread.start();
 	}
 
@@ -171,7 +212,7 @@ public class FightScene extends Pane {
 		});
 
 		returnMenu.setOnMouseClicked(event -> {
-			p.stop();
+//			p.stop();
 			Platform.runLater(() -> {
 				primary.getScene().setRoot(Main.menu);
 			});
@@ -225,8 +266,8 @@ public class FightScene extends Pane {
 			first.setLayoutY(pos.get(index).getValue());
 
 			Image imgchar = new Image(player.getSelf());
-
 			ImageView rep = new ImageView(imgchar);
+			
 			rep.setFitWidth(120);
 			rep.setFitHeight(120);
 
@@ -234,7 +275,9 @@ public class FightScene extends Pane {
 			rep.setLayoutY(pos.get(index).getValue() + 20);
 
 			player.setPos(rep.getLayoutX(), rep.getLayoutY());
-
+			
+			player.setImg(rep);
+			
 			pane.getChildren().addAll(first, rep);
 
 			index++;
@@ -258,6 +301,8 @@ public class FightScene extends Pane {
 			rep.setFitHeight(88);
 			rep.setLayoutX(enemyPos.get(countS).getKey());
 			rep.setLayoutY(enemyPos.get(countS).getValue() + 20);
+			
+			enemy.setImg(rep);
 
 			final int c = countS;
 			rep.setOnMouseClicked(event -> {
@@ -265,6 +310,7 @@ public class FightScene extends Pane {
 					choice = c;
 				}
 			});
+			
 			enemy.setPos(rep.getLayoutX(), rep.getLayoutY());
 			pane.getChildren().addAll(second, rep);
 			countS++;
