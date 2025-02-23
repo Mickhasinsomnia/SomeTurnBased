@@ -64,18 +64,11 @@ public class FightScene extends Pane {
 		            
 		            for (GameCharacter current:all) {
 		               
-		               
-		                if (players.isEmpty() || enemies.isEmpty()) {
-		                    Platform.runLater(() -> primary.getScene().setRoot(Main.menu));
-		                    return;
-		                }
-		                
-		                if(current.getHp()<=0)
-		                	continue;
-
+		            
 		                if (current instanceof Enemy) {
+		                	
 		                    try {
-		                        Thread.sleep(500);
+		                        Thread.sleep(1500);
 		                    } catch (InterruptedException e) {
 		                        return;
 		                    }
@@ -90,9 +83,14 @@ public class FightScene extends Pane {
 		                    if (!alivePlayer.isEmpty()) {
 		                        enemy.chooseTarget(alivePlayer);
 		                    }
+		                    else {
+		                    	Platform.runLater(() -> primary.getScene().setRoot(Main.menu));
+			                    return;
+		                    }
 		                } else {
 		                    choice = -1;
-
+		                    
+		                
 		                    Platform.runLater(() -> {
 		                        onHead.setLayoutX(current.getPosX() - 20);
 		                        onHead.setLayoutY(current.getPosY() + 60);
@@ -125,6 +123,11 @@ public class FightScene extends Pane {
 		                    Platform.runLater(() -> this.getChildren().remove(onHead));
 		                }
 		                checkForDeadCharacters(players, enemies);
+		                
+		                if (players.isEmpty() || enemies.isEmpty()) {
+		                    Platform.runLater(() -> primary.getScene().setRoot(Main.menu));
+		                    return;
+		                }
 		                Platform.runLater(() -> drawScene(bg));
 		                pressed = false;
 		            }
