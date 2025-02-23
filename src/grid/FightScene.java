@@ -36,14 +36,11 @@ public class FightScene extends Pane {
 	private boolean pressed;
 	private int choice;
 	private int type;
-	private Stage primary;
-	private final Object dummy = new Object();
-//	private MediaPlayer p;
-
+	
 	public FightScene(ArrayList<GameCharacter> players, ArrayList<Enemy> enemies, Stage primary, String bg) {
 		this.players = players;
 		this.enemies = enemies;
-		this.primary = primary;
+		
 		pane = new Pane();
 		pane.setMinSize(700, 700);
 		this.getChildren().add(pane);
@@ -52,123 +49,106 @@ public class FightScene extends Pane {
 		drawScene(bg);
 
 		setButton();
-
 		Thread combatThread = new Thread(() -> {
-//			Media sound = new Media(ClassLoader.getSystemResource("sound.mp3").toString());
-//			p = new MediaPlayer(sound);
-//			p.play();
-			while (players.size() > 0 && enemies.size() > 0) {
-				ArrayList<GameCharacter> all = new ArrayList<>();
-				all.addAll(players);
-				all.addAll(enemies);
-				Collections.sort(all);
-				Circle onHead = new Circle(20);
+			try {
+				while (players.size() > 0 && enemies.size() > 0) {
+					ArrayList<GameCharacter> all = new ArrayList<>();
+					all.addAll(players);
+					all.addAll(enemies);
+					Collections.sort(all);
+					Circle onHead = new Circle(20);
 
-				for (GameCharacter current : all) {
-					if (current.getHp() <= 0)
-						continue;
-					if (current instanceof Enemy) {
-						try {
-							Thread.sleep(500);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						Enemy enemy = (Enemy) current;
+					for (GameCharacter current : all) {
+						if (current.getHp() <= 0)
+							continue;
 
-						ArrayList<GameCharacter> alivePlayers = new ArrayList<>();
-						for (GameCharacter player : players) {
-							if (player.getHp() > 0) {
-								alivePlayers.add(player);
+						if (current instanceof Enemy) {
+							try {
+								Thread.sleep(500);
+							} catch (InterruptedException e) {
+								return;
 							}
-						}
-						if (!alivePlayers.isEmpty()) {
-							enemy.chooseTarget(alivePlayers);
-						}
-					} else {
-						choice = -1;
-						if (enemies.size() <= 0) {
-//							p.stop();
+							Enemy enemy = (Enemy) current;
+							ArrayList<GameCharacter> alivePlayers = new ArrayList<>();
+							for (GameCharacter player : players) {
+								if (player.getHp() > 0) {
+									alivePlayers.add(player);
+								}
+							}
+							if (!alivePlayers.isEmpty()) {
+								enemy.chooseTarget(alivePlayers);
+							}
+						} else {
+							choice = -1;
+							if (enemies.size() <= 0) {
+								Platform.runLater(() -> {
+									primary.getScene().setRoot(Main.menu);
+								});
+								return;
+							}
+
 							Platform.runLater(() -> {
-								primary.getScene().setRoot(Main.menu);
+								onHead.setLayoutX(current.getPosX() - 20);
+								onHead.setLayoutY(current.getPosY() + 60);
+								this.getChildren().add(onHead);
+							});
+							while (!pressed) {
+								try {
+									Thread.sleep(1);
+								} catch (InterruptedException e) {
+									return;
+								}
+							}
+							while (choice == -1) {
+								try {
+									Thread.sleep(1);
+								} catch (InterruptedException e) {
+									return;
+								}
+							}
+							Enemy selectedEnemy = enemies.get(choice);
+							playerAction(choice, current, selectedEnemy);
+
+							Platform.runLater(() -> {
+								this.getChildren().remove(onHead);
 							});
 						}
-						Platform.runLater(() -> {
-							onHead.setLayoutX(current.getPosX() - 20);
-							onHead.setLayoutY(current.getPosY() + 60);
-							this.getChildren().add(onHead);
-						});
-						synchronized (dummy) { 
-						    while (!pressed) {
-						        try {
-						            dummy.wait(100);
-						        } catch (InterruptedException e) {
-						            e.printStackTrace();
-						        }
-						    }
-
-						    while (choice == -1) {
-						        try {
-						            dummy.wait(100); 
-						        } catch (InterruptedException e) {
-						            e.printStackTrace();
-						        }
-						    }
-						}
-
-						Enemy selectedEnemy = enemies.get(choice);
-						int damageAction = type;
-						
-						if (damageAction == 1) {
-						    double deltaX = selectedEnemy.getPosX() - current.getPosX();
-						    double deltaY = selectedEnemy.getPosY()-current.getPosY();
-						    moveToAttack(deltaX, deltaY,current.getImg());
-						    current.attack(selectedEnemy);
-						}
-						
-						else if (damageAction == 2) {
-							magicMove(selectedEnemy.getImg());
-						    current.magic(selectedEnemy);
-						}
-						
-						Platform.runLater(() -> {
-							this.getChildren().remove(onHead);
-						});
+						checkForDeadCharacters(players, enemies);
+						Platform.runLater(() -> drawScene(bg));
+						pressed = false;
 					}
-					checkForDeadCharacters(players, enemies);
-					Platform.runLater(() -> drawScene(bg));
-					pressed = false;
 				}
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				Platform.runLater(() -> {
+					primary.getScene().setRoot(Main.menu);
+				});
 			}
-			Platform.runLater(() -> {
-				primary.getScene().setRoot(Main.menu);
-			});
+		});
+		primary.setOnCloseRequest(event -> {
+			if (combatThread != null && combatThread.isAlive()) {
+				combatThread.interrupt();
+			}
 		});
 		combatThread.start();
+
 	}
 
 	private void setButton() {
 		Button attackButton = new Button("Attack");
 		Button magicButton = new Button("Magic");
 
-		Button returnMenu = new Button("return to menu");
-
 		attackButton.setLayoutX(700);
 		attackButton.setLayoutY(650);
 		magicButton.setLayoutX(800);
 		magicButton.setLayoutY(650);
-		returnMenu.setLayoutX(500);
-		returnMenu.setLayoutY(650);
+
 
 		magicButton.setMinSize(60, 40);
 		attackButton.setMinSize(60, 40);
-		returnMenu.setMinSize(60, 40);
 
-		this.getChildren().addAll(attackButton, magicButton, returnMenu);
+		this.getChildren().addAll(attackButton, magicButton);
 
 		attackButton.setOnMouseClicked(event -> {
 			pressed = true;
@@ -178,13 +158,6 @@ public class FightScene extends Pane {
 		magicButton.setOnMouseClicked(event -> {
 			pressed = true;
 			type = 2;
-		});
-
-		returnMenu.setOnMouseClicked(event -> {
-//			p.stop();
-			Platform.runLater(() -> {
-				primary.getScene().setRoot(Main.menu);
-			});
 		});
 	}
 
@@ -228,25 +201,23 @@ public class FightScene extends Pane {
 		ArrayList<Pair<Integer, Integer>> pos = setupPlayer();
 		int index = 0;
 		for (GameCharacter player : players) {
-			Text first = new Text(player.getClass().getSimpleName() + " " + " HP: " + player.getHp() + " " + " MP: "
-					+ player.getMana());
+			Text first = new Text(player.getClass().getSimpleName() + " " + " HP: " + player.getHp() + " " + " MP: "+ player.getMana());
 			first.setFont(Font.font(20));
-			first.setLayoutX(pos.get(index).getKey());
-			first.setLayoutY(pos.get(index).getValue());
+
+			setPos(pos, index, first, player);
 
 			Image imgchar = new Image(player.getSelf());
 			ImageView rep = new ImageView(imgchar);
-			
+
 			rep.setFitWidth(120);
 			rep.setFitHeight(120);
 
-			rep.setLayoutX(pos.get(index).getKey());
-			rep.setLayoutY(pos.get(index).getValue() + 20);
+			setImagePos(pos, index, rep, player);
 
 			player.setPos(rep.getLayoutX(), rep.getLayoutY());
-			
+
 			player.setImg(rep);
-			
+
 			pane.getChildren().addAll(first, rep);
 
 			index++;
@@ -255,7 +226,6 @@ public class FightScene extends Pane {
 
 	public void drawEnemy() {
 		ArrayList<Pair<Integer, Integer>> enemyPos = setupEnemy();
-
 		int countS = 0;
 		for (Enemy enemy : enemies) {
 			Text second = new Text("Enemy HP: " + enemy.getHp());
@@ -263,21 +233,22 @@ public class FightScene extends Pane {
 			second.setLayoutX(enemyPos.get(countS).getKey());
 			second.setLayoutY(enemyPos.get(countS).getValue());
 
+			setPos(enemyPos, countS, second, enemy);
+
 			Image imgchar = new Image(ClassLoader.getSystemResource("up_2.png").toString());
 			ImageView rep = new ImageView(imgchar);
 
 			rep.setFitWidth(88);
 			rep.setFitHeight(88);
-			rep.setLayoutX(enemyPos.get(countS).getKey());
-			rep.setLayoutY(enemyPos.get(countS).getValue() + 20);
 			
+			setImagePos(enemyPos, countS, rep, enemy);
+
 			enemy.setImg(rep);
 
 			final int c = countS;
 			rep.setOnMouseClicked(event -> {
-				if (pressed) {
+				if (pressed) 
 					choice = c;
-				}
 			});
 			
 			enemy.setPos(rep.getLayoutX(), rep.getLayoutY());
@@ -285,29 +256,62 @@ public class FightScene extends Pane {
 			countS++;
 		}
 	}
-	
-	private void moveToAttack(double deltaX,double deltaY,ImageView img) {
-	    TranslateTransition transition = new TranslateTransition(Duration.seconds(1.5), img);
-	    transition.setByX(deltaX); 
-	    transition.setByY(deltaY);  
-	    transition.play();
-	    try {
-	        Thread.sleep(1500);
-	    } catch (InterruptedException e) {
-	        e.printStackTrace();
-	    }
+
+	private void moveToAttack(double deltaX, double deltaY, ImageView img) {
+		TranslateTransition transition = new TranslateTransition(Duration.seconds(1.5), img);
+		transition.setByX(deltaX);
+		transition.setByY(deltaY);
+		transition.play();
+		try {
+			Thread.sleep(1500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	private void magicMove(ImageView view) {
 		TranslateTransition shakeTransition = new TranslateTransition(Duration.seconds(0.5), view);
-	    shakeTransition.setByX(10); 
-	    shakeTransition.setAutoReverse(true); 
-	    shakeTransition.play();
-	    try {
-	    	Thread.sleep(1500);
-	    }
-	    catch (InterruptedException e) {
-	        e.printStackTrace();
-	    }
+		shakeTransition.setByX(10);
+		shakeTransition.setAutoReverse(true);
+		shakeTransition.play();
+		try {
+			Thread.sleep(1500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void setPos(ArrayList<Pair<Integer, Integer>> Pos,int count,Text second,GameCharacter current) {
+		if (current.stillDefault()) {
+			second.setLayoutX(Pos.get(count).getKey());
+			second.setLayoutY(Pos.get(count).getValue());
+			current.setOriginalX(Pos.get(count).getKey());
+			current.setOriginalY(Pos.get(count).getValue());
+		} else {
+			second.setLayoutX(current.getOriginalX());
+			second.setLayoutY(current.getOriginalY());
+		}
+	}
+	
+	private void setImagePos(ArrayList<Pair<Integer, Integer>> Pos,int count,ImageView rep,GameCharacter enemy) {
+		if (enemy.stillDefault()) {
+			rep.setLayoutX(Pos.get(count).getKey());
+			rep.setLayoutY(Pos.get(count).getValue() + 20);
+		} else {
+			rep.setLayoutX(enemy.getOriginalX());
+			rep.setLayoutY(enemy.getOriginalY() + 20);
+		}
+	}
+
+	private void playerAction(int damageAction,GameCharacter current,GameCharacter selectedEnemy) {
+		if (damageAction == 1) {
+			double deltaX = selectedEnemy.getPosX() - current.getPosX();
+			double deltaY = selectedEnemy.getPosY() - current.getPosY();
+			moveToAttack(deltaX, deltaY, current.getImg());
+			current.attack(selectedEnemy);
+		} else if (damageAction == 2) {
+			magicMove(selectedEnemy.getImg());
+			current.magic(selectedEnemy);
+		}
 	}
 }

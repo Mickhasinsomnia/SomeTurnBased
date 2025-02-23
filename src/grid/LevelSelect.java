@@ -41,11 +41,13 @@ public class LevelSelect {
 			ArrayList<GameCharacter>player=new ArrayList<>();
 		       
 			   player.add(new Swordman());
-		       player.add(new Swordman());	       
+		            
 		       ArrayList<Enemy>enemy=new ArrayList<>();
 //		       
 		       enemy.add(new Enemy());	       
 		       enemy.add(new Enemy());	     
+		       enemy.add(new Enemy());		       
+		       enemy.add(new Enemy());
 
 				FightScene level1=new FightScene(player,enemy,primary,"finalfan.png");
 				primary.getScene().setRoot(level1);

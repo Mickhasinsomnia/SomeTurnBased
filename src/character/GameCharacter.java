@@ -11,8 +11,8 @@ public abstract class GameCharacter implements Comparable<GameCharacter> {
 	protected String self;
 	protected double Xpos;
 	protected double Ypos;
-	protected double originalX;
-	protected double originalY;
+	protected double originalX=-1;
+	protected double originalY=-1;
 	protected ImageView img;
 
 	public ImageView getImg() {
@@ -102,5 +102,25 @@ public abstract class GameCharacter implements Comparable<GameCharacter> {
 
 	public double getPosY() {
 		return Ypos;
+	}
+	
+	public boolean stillDefault() {
+		return (originalX==-1 && originalY==-1);
+	}
+
+	public double getOriginalX() {
+		return originalX;
+	}
+
+	public void setOriginalX(double originalX) {
+		this.originalX = originalX;
+	}
+
+	public double getOriginalY() {
+		return originalY;
+	}
+
+	public void setOriginalY(double originalY) {
+		this.originalY = originalY;
 	}
 }
