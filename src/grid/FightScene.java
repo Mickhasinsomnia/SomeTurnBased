@@ -107,7 +107,7 @@ public class FightScene extends Pane {
 								}
 							}
 							Enemy selectedEnemy = enemies.get(choice);
-							playerAction(choice, current, selectedEnemy);
+							playerAction(type, current, selectedEnemy);
 
 							Platform.runLater(() -> {
 								this.getChildren().remove(onHead);
