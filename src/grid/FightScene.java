@@ -27,6 +27,8 @@ import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import application.Main;
 
@@ -52,93 +54,83 @@ public class FightScene extends Pane {
 
 		setButton();
 		Thread combatThread = new Thread(() -> {
-			try {
-				while (players.size() > 0 && enemies.size() > 0) {
-					ArrayList<GameCharacter> all = new ArrayList<>();
-					all.addAll(players);
-					all.addAll(enemies);
-					Collections.sort(all);
-					Circle onHead = new Circle(20);
+		    try {
+		        while (!players.isEmpty() && !enemies.isEmpty()) {
+		            List<GameCharacter> all = new ArrayList<>(players);
+		            all.addAll(enemies);
+		            Collections.sort(all);
 
-					for (GameCharacter current : all) {
-						if (current.getHp() <= 0)
-							continue;
+		            Circle onHead = new Circle(20);
+		            
+		            for (Iterator<GameCharacter> iterator = all.iterator(); iterator.hasNext(); ) {
+		                GameCharacter current = iterator.next();
+		               
+		                if (players.isEmpty() || enemies.isEmpty()) {
+		                    Platform.runLater(() -> primary.getScene().setRoot(Main.menu));
+		                    return;
+		                }
 
-						if (current instanceof Enemy) {
-							if (players.isEmpty()) {
+		                if (current instanceof Enemy) {
+		                    try {
+		                        Thread.sleep(500);
+		                    } catch (InterruptedException e) {
+		                        return;
+		                    }
+		                    Enemy enemy = (Enemy) current;
+		                    if (!players.isEmpty()) {
+		                        enemy.chooseTarget(players);
+		                    }
+		                } else {
+		                    choice = -1;
 
-							}
+		                    Platform.runLater(() -> {
+		                        onHead.setLayoutX(current.getPosX() - 20);
+		                        onHead.setLayoutY(current.getPosY() + 60);
+		                        this.getChildren().add(onHead);
+		                    });
 
-							try {
-								Thread.sleep(500);
-							} catch (InterruptedException e) {
-								return;
-							}
-							Enemy enemy = (Enemy) current;
-							ArrayList<GameCharacter> alivePlayers = new ArrayList<>();
-							for (GameCharacter player : players) {
-								if (player.getHp() > 0) {
-									alivePlayers.add(player);
-								}
-							}
-							if (!alivePlayers.isEmpty()) {
-								
-								
-								
-								
-								enemy.chooseTarget(alivePlayers);
-							}
-						} else {
-							choice = -1;
-							if (enemies.isEmpty()) {
-								Platform.runLater(() -> {
-									primary.getScene().setRoot(Main.menu);
-								});
-								return;
-							}
+		                    while (!pressed) {
+		                        try {
+		                            Thread.sleep(1);
+		                        } catch (InterruptedException e) {
+		                            return;
+		                        }
+		                    }
 
-							Platform.runLater(() -> {
-								onHead.setLayoutX(current.getPosX() - 20);
-								onHead.setLayoutY(current.getPosY() + 60);
-								this.getChildren().add(onHead);
-							});
-							while (!pressed) {
-								try {
-									Thread.sleep(1);
-								} catch (InterruptedException e) {
-									return;
-								}
-							}
-							while (choice == -1) {
-								try {
-									Thread.sleep(1);
-								} catch (InterruptedException e) {
-									return;
-								}
-							}
-							Enemy selectedEnemy = enemies.get(choice);
-							playerAction(type, current, selectedEnemy);
+		                    while (choice == -1) {
+		                        try {
+		                            Thread.sleep(1);
+		                        } catch (InterruptedException e) {
+		                            return;
+		                        }
+		                    }
+		                    Enemy selectedEnemy = enemies.get(choice);
 
-							Platform.runLater(() -> {
-								this.getChildren().remove(onHead);
-							});
-						}
-						checkForDeadCharacters(players, enemies);
-						Platform.runLater(() -> drawScene(bg));
-						pressed = false;
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		                    if (!enemies.contains(selectedEnemy)) {
+		                        continue;
+		                    }
+
+		                    playerAction(type, current, selectedEnemy);
+
+		                    Platform.runLater(() -> this.getChildren().remove(onHead));
+		                }
+
+		                checkForDeadCharacters(players, enemies);
+		                Platform.runLater(() -> drawScene(bg));
+		                pressed = false;
+		            }
+		        }
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
 		});
+
 		primary.setOnCloseRequest(event -> {
-			if (combatThread != null && combatThread.isAlive()) {
-				combatThread.interrupt();
-			}
+		    if (combatThread != null && combatThread.isAlive()) {
+		        combatThread.interrupt();
+		    }
 		});
 		combatThread.start();
-
 	}
 
 	private void setButton() {

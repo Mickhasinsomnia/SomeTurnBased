@@ -16,18 +16,17 @@ public class LevelSelect {
 		case 1:{
 			ArrayList<GameCharacter>player=new ArrayList<>();
 	       
-		   player.add(new Swordman());
-	       player.add(new Swordman());	       
+		   player.add(new Swordman());	       
 	       player.add(new Wizard());       
-	       player.add(new Wizard());
+	    
 	     
 	       
 	       ArrayList<Enemy>enemy=new ArrayList<>();
 //	       
 	       enemy.add(new Enemy());	       
-	       enemy.add(new Enemy());	     
-	       enemy.add(new Enemy());		       
-	       enemy.add(new Enemy());
+	       enemy.add(new Enemy());	   
+	       enemy.add(new Enemy());	
+	      
 		
 		
 		FightScene level0=new FightScene(player,enemy,primary,"sand.png");
