@@ -62,13 +62,16 @@ public class FightScene extends Pane {
 
 		            Circle onHead = new Circle(20);
 		            
-		            for (Iterator<GameCharacter> iterator = all.iterator(); iterator.hasNext(); ) {
-		                GameCharacter current = iterator.next();
+		            for (GameCharacter current:all) {
+		               
 		               
 		                if (players.isEmpty() || enemies.isEmpty()) {
 		                    Platform.runLater(() -> primary.getScene().setRoot(Main.menu));
 		                    return;
 		                }
+		                
+		                if(current.getHp()<=0)
+		                	continue;
 
 		                if (current instanceof Enemy) {
 		                    try {
@@ -77,8 +80,15 @@ public class FightScene extends Pane {
 		                        return;
 		                    }
 		                    Enemy enemy = (Enemy) current;
-		                    if (!players.isEmpty()) {
-		                        enemy.chooseTarget(players);
+		                    
+		                    ArrayList<GameCharacter>alivePlayer=new ArrayList<>();
+		                    for(GameCharacter alive:players ) {
+		                    	alivePlayer.add(alive);
+		                    }
+		                    
+		                    
+		                    if (!alivePlayer.isEmpty()) {
+		                        enemy.chooseTarget(alivePlayer);
 		                    }
 		                } else {
 		                    choice = -1;
@@ -114,7 +124,6 @@ public class FightScene extends Pane {
 
 		                    Platform.runLater(() -> this.getChildren().remove(onHead));
 		                }
-
 		                checkForDeadCharacters(players, enemies);
 		                Platform.runLater(() -> drawScene(bg));
 		                pressed = false;
