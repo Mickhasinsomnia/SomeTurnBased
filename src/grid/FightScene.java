@@ -8,14 +8,16 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
-
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -36,11 +38,11 @@ public class FightScene extends Pane {
 	private boolean pressed;
 	private int choice;
 	private int type;
-	
+
 	public FightScene(ArrayList<GameCharacter> players, ArrayList<Enemy> enemies, Stage primary, String bg) {
 		this.players = players;
 		this.enemies = enemies;
-		
+
 		pane = new Pane();
 		pane.setMinSize(700, 700);
 		this.getChildren().add(pane);
@@ -63,6 +65,10 @@ public class FightScene extends Pane {
 							continue;
 
 						if (current instanceof Enemy) {
+							if (players.isEmpty()) {
+
+							}
+
 							try {
 								Thread.sleep(500);
 							} catch (InterruptedException e) {
@@ -76,11 +82,15 @@ public class FightScene extends Pane {
 								}
 							}
 							if (!alivePlayers.isEmpty()) {
+								
+								
+								
+								
 								enemy.chooseTarget(alivePlayers);
 							}
 						} else {
 							choice = -1;
-							if (enemies.size() <= 0) {
+							if (enemies.isEmpty()) {
 								Platform.runLater(() -> {
 									primary.getScene().setRoot(Main.menu);
 								});
@@ -120,10 +130,6 @@ public class FightScene extends Pane {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-			} finally {
-				Platform.runLater(() -> {
-					primary.getScene().setRoot(Main.menu);
-				});
 			}
 		});
 		primary.setOnCloseRequest(event -> {
@@ -143,7 +149,6 @@ public class FightScene extends Pane {
 		attackButton.setLayoutY(650);
 		magicButton.setLayoutX(800);
 		magicButton.setLayoutY(650);
-
 
 		magicButton.setMinSize(60, 40);
 		attackButton.setMinSize(60, 40);
@@ -201,10 +206,17 @@ public class FightScene extends Pane {
 		ArrayList<Pair<Integer, Integer>> pos = setupPlayer();
 		int index = 0;
 		for (GameCharacter player : players) {
-			Text first = new Text(player.getClass().getSimpleName() + " " + " HP: " + player.getHp() + " " + " MP: "+ player.getMana());
+
+			HBox f1 = new HBox();
+			Text first = new Text(player.getClass().getSimpleName() + " " + " HP: " + player.getHp() + " " + " MP: "
+					+ player.getMana());
 			first.setFont(Font.font(20));
 
-			setPos(pos, index, first, player);
+			f1.getChildren().add(first);
+
+			f1.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+
+			setPos(pos, index, f1, player);
 
 			Image imgchar = new Image(player.getSelf());
 			ImageView rep = new ImageView(imgchar);
@@ -218,7 +230,7 @@ public class FightScene extends Pane {
 
 			player.setImg(rep);
 
-			pane.getChildren().addAll(first, rep);
+			pane.getChildren().addAll(f1, rep);
 
 			index++;
 		}
@@ -228,60 +240,64 @@ public class FightScene extends Pane {
 		ArrayList<Pair<Integer, Integer>> enemyPos = setupEnemy();
 		int countS = 0;
 		for (Enemy enemy : enemies) {
+
+			HBox f2 = new HBox();
 			Text second = new Text("Enemy HP: " + enemy.getHp());
 			second.setFont(Font.font(20));
-			second.setLayoutX(enemyPos.get(countS).getKey());
-			second.setLayoutY(enemyPos.get(countS).getValue());
 
-			setPos(enemyPos, countS, second, enemy);
+			f2.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+
+			f2.getChildren().add(second);
+
+			setPos(enemyPos, countS, f2, enemy);
 
 			Image imgchar = new Image(ClassLoader.getSystemResource("up_2.png").toString());
 			ImageView rep = new ImageView(imgchar);
 
 			rep.setFitWidth(88);
 			rep.setFitHeight(88);
-			
+
 			setImagePos(enemyPos, countS, rep, enemy);
 
 			enemy.setImg(rep);
 
 			final int c = countS;
 			rep.setOnMouseClicked(event -> {
-				if (pressed) 
+				if (pressed)
 					choice = c;
 			});
-			
+
 			enemy.setPos(rep.getLayoutX(), rep.getLayoutY());
-			pane.getChildren().addAll(second, rep);
+			pane.getChildren().addAll(f2, rep);
 			countS++;
 		}
 	}
 
-	private void moveToAttack(double deltaX, double deltaY, ImageView img) {
-		TranslateTransition transition = new TranslateTransition(Duration.seconds(1.5), img);
+	public static void moveToAttack(double deltaX, double deltaY, ImageView img) {
+		TranslateTransition transition = new TranslateTransition(Duration.seconds(0.75), img);
 		transition.setByX(deltaX);
 		transition.setByY(deltaY);
 		transition.play();
 		try {
-			Thread.sleep(1500);
+			Thread.sleep(750);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void magicMove(ImageView view) {
-		TranslateTransition shakeTransition = new TranslateTransition(Duration.seconds(0.5), view);
+	public static void magicMove(ImageView view) {
+		TranslateTransition shakeTransition = new TranslateTransition(Duration.seconds(0.25), view);
 		shakeTransition.setByX(10);
 		shakeTransition.setAutoReverse(true);
 		shakeTransition.play();
 		try {
-			Thread.sleep(1500);
+			Thread.sleep(250);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	private void setPos(ArrayList<Pair<Integer, Integer>> Pos,int count,Text second,GameCharacter current) {
+
+	private void setPos(ArrayList<Pair<Integer, Integer>> Pos, int count, HBox second, GameCharacter current) {
 		if (current.stillDefault()) {
 			second.setLayoutX(Pos.get(count).getKey());
 			second.setLayoutY(Pos.get(count).getValue());
@@ -292,8 +308,8 @@ public class FightScene extends Pane {
 			second.setLayoutY(current.getOriginalY());
 		}
 	}
-	
-	private void setImagePos(ArrayList<Pair<Integer, Integer>> Pos,int count,ImageView rep,GameCharacter enemy) {
+
+	private void setImagePos(ArrayList<Pair<Integer, Integer>> Pos, int count, ImageView rep, GameCharacter enemy) {
 		if (enemy.stillDefault()) {
 			rep.setLayoutX(Pos.get(count).getKey());
 			rep.setLayoutY(Pos.get(count).getValue() + 20);
@@ -303,11 +319,12 @@ public class FightScene extends Pane {
 		}
 	}
 
-	private void playerAction(int damageAction,GameCharacter current,GameCharacter selectedEnemy) {
+	public static void playerAction(int damageAction, GameCharacter current, GameCharacter selectedEnemy) {
 		if (damageAction == 1) {
 			double deltaX = selectedEnemy.getPosX() - current.getPosX();
 			double deltaY = selectedEnemy.getPosY() - current.getPosY();
 			moveToAttack(deltaX, deltaY, current.getImg());
+			magicMove(selectedEnemy.getImg());
 			current.attack(selectedEnemy);
 		} else if (damageAction == 2) {
 			magicMove(selectedEnemy.getImg());

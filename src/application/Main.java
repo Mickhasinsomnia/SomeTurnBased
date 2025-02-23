@@ -19,7 +19,8 @@ public class Main extends Application {
 
 	private Stage primary;
 	public static VBox menu;
-
+	public static VBox wasted;
+	
 	@Override
 	public void start(Stage primaryStage) {
 
@@ -36,6 +37,11 @@ public class Main extends Application {
 		root.setAlignment(Pos.CENTER);
 		root.getChildren().addAll(buttonList);
 		Main.menu = root;
+		
+		
+		VBox wasted = new VBox(20);
+		wasted.setAlignment(Pos.CENTER);
+		
 
 		Scene scene = new Scene(root, 900, 700);
 		primaryStage.setTitle("Start Game");
