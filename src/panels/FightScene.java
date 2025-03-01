@@ -186,6 +186,7 @@ public class FightScene extends Pane {
 		attackButton.setOnMouseClicked(event -> {
 			pressed = true;
 			type = 1;
+			
 		});
 
 		magicButton.setOnMouseClicked(event -> {
