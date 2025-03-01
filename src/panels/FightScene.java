@@ -162,12 +162,15 @@ public class FightScene extends Pane {
 		magicButton.setMinSize(120, 75);
 		back.setMinSize(248, 40);
 
-		String buttonStyle = "-fx-background-color: rgba(0, 0, 0, 0.7); -fx-border-color: white; "
+		String defaultButtonStyle = "-fx-background-color: rgba(0, 0, 0, 0.7); -fx-border-color: white; "
+				+ "-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10px;";
+		String selectButtonStyle = "-fx-background-color: rgba(0, 0, 0, 0.7); -fx-border-color: white; "
 				+ "-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10px;";
 
-		attackButton.setStyle(buttonStyle);
-		magicButton.setStyle(buttonStyle);
-		back.setStyle(buttonStyle);
+		
+		attackButton.setStyle(defaultButtonStyle);
+		magicButton.setStyle(defaultButtonStyle);
+		back.setStyle(defaultButtonStyle);
 
 		Platform.runLater(() -> {
 			this.getChildren().addAll(attackButton, magicButton, back);

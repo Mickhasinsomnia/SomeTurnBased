@@ -52,7 +52,7 @@ public class UtilScene {
 		Button back = new Button("Back To Main");
 		back.setFont(Font.font("Arial", FontWeight.BOLD, 24));
 		ButtonManager.styleButton(back);
-		back.setLayoutX(30);
+		back.setLayoutX(26);
 		back.setLayoutY(600);
 		back.setMinSize(120, 40);
 		back.setOnAction(e -> Main.showTitleScreen(primary));
