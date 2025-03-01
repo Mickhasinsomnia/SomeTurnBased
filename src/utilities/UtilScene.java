@@ -167,7 +167,6 @@ public class UtilScene {
 		Platform.runLater(() -> {
 			primary.getScene().setRoot(manageLayout);
 		});
-		
 	}
 
 	private static ArrayList<Pair<Integer, Integer>> generatePlayerIconPosition() {
@@ -186,6 +185,7 @@ public class UtilScene {
 
 		for (int i = 1; i <= unlockedLevels; i++) {
 			buttonList.add(selectLevel(i, primary));
+			
 		}
 
 		FlowPane flowPane = new FlowPane();
@@ -203,10 +203,9 @@ public class UtilScene {
 
 		flowPane.getChildren().addAll(buttonList);
 		flowPane.getChildren().add(Back);
-
+		
 		VBox root = new VBox(flowPane);
 		root.setPadding(new Insets(20, 20, 20, 50));
-
 		Platform.runLater(() -> {
 			primary.getScene().setRoot(root);
 		});

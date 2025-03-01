@@ -53,6 +53,14 @@ public class FightScene extends Pane {
 	private VBox playerStatusPanel;
 	private VBox enemyStatusPanel;
 
+	private Button attackButton = new Button("Attack");
+	private Button magicButton = new Button("Magic");
+
+	private String defaultButtonStyle = "-fx-background-color: rgba(0, 0, 0, 0.7); -fx-border-color: white; "
+			+ "-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10px;";
+	private String selectButtonStyle = "-fx-background-color: rgba(255, 255, 255, 0.7); -fx-border-color: black; "
+			+ "-fx-text-fill: black; -fx-font-size: 18px; -fx-font-weight: bold; -fx-background-radius: 10px;";
+
 	public FightScene(ArrayList<GameCharacter> players, ArrayList<GameCharacter> enemies, Stage primary, String bg,
 			String song, int level) {
 		this.players = players;
@@ -147,8 +155,6 @@ public class FightScene extends Pane {
 	}
 
 	private void setButton(Stage primary, Clip clip) {
-		Button attackButton = new Button("Attack");
-		Button magicButton = new Button("Magic");
 		Button back = new Button("Retreat");
 
 		attackButton.setLayoutX(15);
@@ -162,10 +168,6 @@ public class FightScene extends Pane {
 		magicButton.setMinSize(120, 75);
 		back.setMinSize(248, 40);
 
-		String defaultButtonStyle = "-fx-background-color: rgba(0, 0, 0, 0.7); -fx-border-color: white; "
-				+ "-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10px;";
-		String selectButtonStyle = "-fx-background-color: rgba(0, 0, 0, 0.7); -fx-border-color: white; "
-				+ "-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10px;";
 
 		
 		attackButton.setStyle(defaultButtonStyle);
@@ -186,11 +188,15 @@ public class FightScene extends Pane {
 		attackButton.setOnMouseClicked(event -> {
 			pressed = true;
 			type = 1;
+			attackButton.setStyle(selectButtonStyle);
+			magicButton.setStyle(defaultButtonStyle);
 		});
 
 		magicButton.setOnMouseClicked(event -> {
 			pressed = true;
 			type = 2;
+			attackButton.setStyle(defaultButtonStyle);
+			magicButton.setStyle(selectButtonStyle);
 		});
 
 	}
@@ -286,8 +292,11 @@ public class FightScene extends Pane {
 
 			final int c = countS;
 			rep.setOnMouseClicked(event -> {
-				if (pressed)
+				if (pressed) {
 					choice = c;
+					attackButton.setStyle(defaultButtonStyle);
+					magicButton.setStyle(defaultButtonStyle);					
+				}
 			});
 
 			enemy.setPos(rep.getLayoutX(), rep.getLayoutY());
