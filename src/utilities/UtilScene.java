@@ -168,7 +168,6 @@ public class UtilScene {
 			primary.getScene().setRoot(manageLayout);
 		});
 		
-		
 	}
 
 	private static ArrayList<Pair<Integer, Integer>> generatePlayerIconPosition() {
