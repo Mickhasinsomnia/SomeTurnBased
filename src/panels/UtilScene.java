@@ -1,7 +1,6 @@
-package utilities;
+package panels;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import application.Main;
 import character.Archer;
@@ -26,15 +25,14 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-import panels.LevelSelect;
 import player.PlayerTeam;
+import utilities.ButtonManager;
 
 public class UtilScene {
 
 	public static void showManage(Stage primary) {
 		PlayerTeam.player().clear();
 
-		
 		Image bgImage = new Image(ClassLoader.getSystemResource("finalfan2.png").toString());
 		ImageView bgImageView = new ImageView(bgImage);
 		bgImageView.setFitWidth(900);
@@ -49,20 +47,19 @@ public class UtilScene {
 		title.setStroke(Color.BLACK);
 		title.setStrokeWidth(2);
 
-		Button back = new Button("Back To Main");
-		back.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-		ButtonManager.styleButton(back);
-		back.setLayoutX(26);
-		back.setLayoutY(600);
-		back.setMinSize(120, 40);
-		back.setOnAction(e -> Main.showTitleScreen(primary));
-
 		Button selectButton = new Button("Select");
 		selectButton.setFont(Font.font("Arial", FontWeight.BOLD, 24));
 		ButtonManager.styleButton(selectButton);
 		selectButton.setOnAction(e -> showLevelSelect(primary));
 		selectButton.setLayoutX(670);
 		selectButton.setLayoutY(600);
+
+		Button back = new Button("Back to menu");
+		back.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+		ButtonManager.styleButton(back);
+		back.setOnAction(e -> Main.showTitleScreen(primary));
+		back.setLayoutX(50);
+		back.setLayoutY(600);
 
 		Button remove = new Button("Clear");
 		remove.setFont(Font.font("Arial", FontWeight.BOLD, 24));
@@ -76,58 +73,16 @@ public class UtilScene {
 
 		manageLayout.getChildren().addAll(title);
 
-		Button[] buttons = { new Button("Swordman"), new Button("Wizard"), new Button("Archer"), new Button("Priest") };
-		for (int i = 0; i < buttons.length; i++) {
-			buttons[i].setLayoutY(100 + i * 50);
-			buttons[i].setLayoutX(50);
-			buttons[i].setFont(Font.font("Arial", FontWeight.BOLD, 18));
-			ButtonManager.styleButton(buttons[i]);
-		}
+		Button[] buttons = characterButton();
 
-		Label[] labels = { new Label("Total Players: 0"), new Label("Swordman: 0"), new Label("Wizard: 0"),
-				new Label("Archer: 0"), new Label("Priest: 0") };
-
-		for (int i = 0; i < labels.length; i++) {
-			labels[i].setLayoutX(650);
-			labels[i].setLayoutY(100 + i * 30);
-			labels[i].setFont(Font.font("Arial", FontWeight.BOLD, 18));
-			styleLabelWithStroke(labels[i]);
-		}
+		Label[] labels = characterLabel();
 
 		ArrayList<Pair<Integer, Integer>> positions = generatePlayerIconPosition();
 
 		ArrayList<ImageView> playerIcons = new ArrayList<>();
 
 		Thread updateCount = new Thread(() -> {
-			int total = PlayerTeam.player().size();
-			long swordmanCount = PlayerTeam.player().stream().filter(p -> p instanceof Swordman).count();
-			long wizardCount = PlayerTeam.player().stream().filter(p -> p instanceof Wizard).count();
-			long archerCount = PlayerTeam.player().stream().filter(p -> p instanceof Archer).count();
-			long priestCount = PlayerTeam.player().stream().filter(p -> p instanceof Priest).count();
-
-			Platform.runLater(() -> {
-				labels[0].setText("Total Players: " + total);
-				labels[1].setText("Swordman: " + swordmanCount);
-				labels[2].setText("Wizard: " + wizardCount);
-				labels[3].setText("Archer: " + archerCount);
-				labels[4].setText("Priest: " + priestCount);
-
-				manageLayout.getChildren().removeAll(playerIcons);
-				playerIcons.clear();
-
-				for (int i = 0; i < PlayerTeam.player().size(); i++) {
-					GameCharacter p = PlayerTeam.player().get(i);
-					Image selfMade = new Image(p.getSelf());
-
-					ImageView avatar = new ImageView(selfMade);
-					avatar.setFitHeight(120);
-					avatar.setFitWidth(120);
-					avatar.setLayoutX(positions.get(i).getKey());
-					avatar.setLayoutY(positions.get(i).getValue());
-					playerIcons.add(avatar);
-				}
-				manageLayout.getChildren().addAll(playerIcons);
-			});
+			updateStatus(labels, manageLayout, playerIcons, positions);
 		});
 
 		buttons[0].setOnAction(e -> {
@@ -159,10 +114,9 @@ public class UtilScene {
 			updateCount.run();
 		});
 
-		manageLayout.getChildren().addAll(selectButton, remove);
+		manageLayout.getChildren().addAll(selectButton, remove, back);
 		manageLayout.getChildren().addAll(buttons);
 		manageLayout.getChildren().addAll(labels);
-		manageLayout.getChildren().addAll(back);
 
 		Platform.runLater(() -> {
 			primary.getScene().setRoot(manageLayout);
@@ -172,7 +126,7 @@ public class UtilScene {
 	private static ArrayList<Pair<Integer, Integer>> generatePlayerIconPosition() {
 		ArrayList<Pair<Integer, Integer>> use = new ArrayList<>();
 		use.add(new Pair<>(100, 300));
-		use.add(new Pair<>(200, 550));
+		use.add(new Pair<>(200, 480));
 		use.add(new Pair<>(50, 420));
 		use.add(new Pair<>(360, 300));
 		return use;
@@ -185,7 +139,6 @@ public class UtilScene {
 
 		for (int i = 1; i <= unlockedLevels; i++) {
 			buttonList.add(selectLevel(i, primary));
-			
 		}
 
 		FlowPane flowPane = new FlowPane();
@@ -203,9 +156,10 @@ public class UtilScene {
 
 		flowPane.getChildren().addAll(buttonList);
 		flowPane.getChildren().add(Back);
-		
+
 		VBox root = new VBox(flowPane);
 		root.setPadding(new Insets(20, 20, 20, 50));
+
 		Platform.runLater(() -> {
 			primary.getScene().setRoot(root);
 		});
@@ -226,6 +180,64 @@ public class UtilScene {
 		textStroke.setRadius(2.0);
 		textStroke.setSpread(1.0);
 		label.setEffect(textStroke);
+	}
+
+	private static Button[] characterButton() {
+		Button[] buttons = { new Button("Swordman"), new Button("Wizard"), new Button("Archer"), new Button("Priest") };
+		for (int i = 0; i < buttons.length; i++) {
+			buttons[i].setLayoutY(100 + i * 50);
+			buttons[i].setLayoutX(50);
+			buttons[i].setFont(Font.font("Arial", FontWeight.BOLD, 18));
+			ButtonManager.styleButton(buttons[i]);
+		}
+		return buttons;
+	}
+
+	private static Label[] characterLabel() {
+		Label[] labels = { new Label("Total Players: 0"), new Label("Swordman: 0"), new Label("Wizard: 0"),
+				new Label("Archer: 0"), new Label("Priest: 0") };
+
+		for (int i = 0; i < labels.length; i++) {
+			labels[i].setLayoutX(650);
+			labels[i].setLayoutY(100 + i * 30);
+			labels[i].setFont(Font.font("Arial", FontWeight.BOLD, 18));
+			styleLabelWithStroke(labels[i]);
+		}
+		return labels;
+	}
+
+	private static void updateStatus(Label[] labels, Pane manageLayout, ArrayList<ImageView> playerIcons,
+			ArrayList<Pair<Integer, Integer>> positions) {
+		int total = PlayerTeam.player().size();
+		long swordmanCount = PlayerTeam.player().stream().filter(p -> p instanceof Swordman).count();
+		long wizardCount = PlayerTeam.player().stream().filter(p -> p instanceof Wizard).count();
+		long archerCount = PlayerTeam.player().stream().filter(p -> p instanceof Archer).count();
+		long priestCount = PlayerTeam.player().stream().filter(p -> p instanceof Priest).count();
+
+		Platform.runLater(() -> {
+			labels[0].setText("Total Players: " + total);
+			labels[1].setText("Swordman: " + swordmanCount);
+			labels[2].setText("Wizard: " + wizardCount);
+			labels[3].setText("Archer: " + archerCount);
+			labels[4].setText("Priest: " + priestCount);
+
+			manageLayout.getChildren().removeAll(playerIcons);
+			playerIcons.clear();
+
+			for (int i = 0; i < PlayerTeam.player().size(); i++) {
+				GameCharacter p = PlayerTeam.player().get(i);
+				Image selfMade = new Image(p.getImagePath());
+
+				ImageView avatar = new ImageView(selfMade);
+				avatar.setFitHeight(120);
+				avatar.setFitWidth(120);
+				avatar.setLayoutX(positions.get(i).getKey());
+				avatar.setLayoutY(positions.get(i).getValue());
+				playerIcons.add(avatar);
+			}
+			manageLayout.getChildren().addAll(playerIcons);
+		});
+
 	}
 
 }

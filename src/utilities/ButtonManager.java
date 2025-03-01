@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import panels.UtilScene;
 
 public class ButtonManager {
 	public static Button newgameButton(Stage primary) {

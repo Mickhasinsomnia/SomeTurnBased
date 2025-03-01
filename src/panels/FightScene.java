@@ -29,7 +29,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import utilities.SaveManager;
-import utilities.UtilScene;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,16 +81,15 @@ public class FightScene extends Pane {
 
 	private void startCombat(Stage primary, String bg, String song, int level) {
 		Thread combatThread = new Thread(() -> {
-
+			Clip clip = null;
 			try {
-
 				AudioInputStream audio = AudioSystem.getAudioInputStream(ClassLoader.getSystemResource("sound.wav"));
-				Clip clip = AudioSystem.getClip();
+				clip = AudioSystem.getClip();
 				clip.open(audio);
-				clip.start();
-				setButton(primary, clip);
+				clip.loop(Clip.LOOP_CONTINUOUSLY);
+				setButton(primary, clip, Thread.currentThread());
 
-				while (!players.isEmpty() && !enemies.isEmpty()) {
+				while (!players.isEmpty() && !enemies.isEmpty() && !Thread.currentThread().isInterrupted()) {
 					List<GameCharacter> all = new ArrayList<>(players);
 					all.addAll(enemies);
 					Collections.sort(all);
@@ -99,20 +97,21 @@ public class FightScene extends Pane {
 					Polygon onHead = pointerPlayer();
 
 					for (GameCharacter current : all) {
-						if (current.getHp() < 0)
+						if (current.getHp() <= 0)
 							continue;
+
 						if (current instanceof Enemy) {
 							enemyTurn(current, level, primary);
 						} else {
 							choice = -1;
 							if (!(current instanceof Priest)) {
-								Platform.runLater(() -> {
-									setOnHead(onHead, current);
-								});
+								Platform.runLater(() -> setOnHead(onHead, current));
 
 								while (!pressed || choice == -1) {
 									try {
 										Thread.sleep(100);
+										if (Thread.currentThread().isInterrupted())
+											return;
 									} catch (InterruptedException e) {
 										Thread.currentThread().interrupt();
 										return;
@@ -120,23 +119,24 @@ public class FightScene extends Pane {
 								}
 
 								Enemy selectedEnemy = (Enemy) enemies.get(choice);
-
 								if (!enemies.contains(selectedEnemy))
 									continue;
 
 								playerAction(type, current, selectedEnemy, this);
-
 								Platform.runLater(() -> this.getChildren().remove(onHead));
+
 							} else {
 								Thread.sleep(1500);
 								autoHeal(current, players);
 							}
 						}
-						checkForDeadCharacters(players, enemies);
 
+						checkForDeadCharacters(players, enemies);
 						if (players.isEmpty() || enemies.isEmpty()) {
 							setGameEnd(level, primary, clip, Thread.currentThread());
+							return;
 						}
+
 						Platform.runLater(() -> {
 							drawScene(bg);
 							updateStatusPanels();
@@ -145,16 +145,22 @@ public class FightScene extends Pane {
 					}
 				}
 				setGameEnd(level, primary, clip, Thread.currentThread());
+
 			} catch (Exception e) {
 				e.printStackTrace();
+			} finally {
+				if (clip != null) {
+					clip.stop();
+					clip.close();
+				}
 			}
 		});
+
 		setExit(primary, combatThread);
 		combatThread.start();
-
 	}
 
-	private void setButton(Stage primary, Clip clip) {
+	private void setButton(Stage primary, Clip clip, Thread combatThread) {
 		Button back = new Button("Retreat");
 
 		attackButton.setLayoutX(15);
@@ -167,8 +173,6 @@ public class FightScene extends Pane {
 		attackButton.setMinSize(120, 75);
 		magicButton.setMinSize(120, 75);
 		back.setMinSize(248, 40);
-
-
 		
 		attackButton.setStyle(defaultButtonStyle);
 		magicButton.setStyle(defaultButtonStyle);
@@ -177,19 +181,25 @@ public class FightScene extends Pane {
 		Platform.runLater(() -> {
 			this.getChildren().addAll(attackButton, magicButton, back);
 		});
-		back.setOnMouseClicked(event -> {
-			clip.stop();
-			Platform.runLater(() -> {
-				UtilScene.showLevelSelect(primary);
-			});
 
+		back.setOnMouseClicked(event -> {
+			if (combatThread != null && combatThread.isAlive()) {
+				combatThread.interrupt();
+				try {
+					combatThread.join(500);
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+				}
+			}
+			clip.stop();
+			Platform.runLater(() -> UtilScene.showLevelSelect(primary));
 		});
 
 		attackButton.setOnMouseClicked(event -> {
 			pressed = true;
 			type = 1;
 			attackButton.setStyle(selectButtonStyle);
-			magicButton.setStyle(defaultButtonStyle);
+			magicButton.setStyle(defaultButtonStyle);			
 		});
 
 		magicButton.setOnMouseClicked(event -> {
@@ -200,6 +210,7 @@ public class FightScene extends Pane {
 		});
 
 	}
+	
 
 	private void setExit(Stage primary, Thread combatThread) {
 		primary.setOnCloseRequest(event -> {
@@ -251,7 +262,7 @@ public class FightScene extends Pane {
 		int index = 0;
 		for (GameCharacter player : players) {
 
-			Image imgchar = new Image(player.getSelf());
+			Image imgchar = new Image(player.getImagePath());
 			ImageView rep = new ImageView(imgchar);
 
 			rep.setFitWidth(120);
@@ -280,7 +291,7 @@ public class FightScene extends Pane {
 		int countS = 0;
 		for (GameCharacter enemy : enemies) {
 
-			Image imgchar = new Image(enemy.getSelf());
+			Image imgchar = new Image(enemy.getImagePath());
 			ImageView rep = new ImageView(imgchar);
 
 			rep.setFitWidth(120);
@@ -292,10 +303,10 @@ public class FightScene extends Pane {
 
 			final int c = countS;
 			rep.setOnMouseClicked(event -> {
-				if (pressed) {
+				if (pressed){
 					choice = c;
 					attackButton.setStyle(defaultButtonStyle);
-					magicButton.setStyle(defaultButtonStyle);					
+					magicButton.setStyle(defaultButtonStyle);	
 				}
 			});
 
@@ -346,6 +357,7 @@ public class FightScene extends Pane {
 		} catch (InterruptedException e) {
 
 		}
+		
 		if (!(current instanceof EnemyHealer)) {
 
 			Enemy enemy = (Enemy) current;
@@ -527,7 +539,7 @@ public class FightScene extends Pane {
 
 		Platform.runLater(() -> {
 			resultPane.getChildren().addAll(resultLabel, menuButton);
-			this.getChildren().add(resultPane);
+			primary.getScene().setRoot(resultPane);
 		});
 
 	}

@@ -4,10 +4,9 @@ public class Priest extends GameCharacter {
 
 	public Priest() {
 		this.setHp(50);
-		this.setAttack(65);
-		setMagic(50);
+		setMagic(20);
 		setSpeed(12);
-		self=ClassLoader.getSystemResource("priest.png").toString();
+		imagePath=ClassLoader.getSystemResource("priest.png").toString();
 		maxhp=hp;
 	}
 	

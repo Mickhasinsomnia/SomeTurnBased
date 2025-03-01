@@ -16,18 +16,18 @@ public class Enemy extends GameCharacter {
 		setMana(mana);
 		setSpeed(speed);
 		maxhp = hp;
-		this.self = ClassLoader.getSystemResource("up_2.png").toString();
+		this.imagePath = ClassLoader.getSystemResource("up_2.png").toString();
 	}
 
 	public Enemy() {
 		setHp(200);
 		setAttack(20);
-		setMagic(30);
+		setMagic(20);
 		setMana(100);
 		setSpeed(1);
 		setManacost(15);
 		maxhp = hp;
-		this.self = ClassLoader.getSystemResource("up_2.png").toString();
+		this.imagePath = ClassLoader.getSystemResource("up_2.png").toString();
 	}
 
 	public int getManacost() {

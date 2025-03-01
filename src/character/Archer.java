@@ -4,9 +4,9 @@ public class Archer extends GameCharacter implements RangeCharacter{
 
 	public Archer() {
 		this.setHp(80);
-		this.setAttack(50);
-		setSpeed(12);
-		self=ClassLoader.getSystemResource("archer.png").toString();
+		this.setAttack(25);
+		setSpeed(14);
+		imagePath=ClassLoader.getSystemResource("archer.png").toString();
 		maxhp=hp;
 	}
 	

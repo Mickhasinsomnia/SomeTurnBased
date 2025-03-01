@@ -4,12 +4,12 @@ package character;
 public class Swordman extends GameCharacter {
 
 	public Swordman() {
-		this.setHp(200);
-		this.setAttack(40);
+		this.setHp(160);
+		this.setAttack(20);
 		setMagic(0);
 		setMana(0);
 		setSpeed(10);
-		self=ClassLoader.getSystemResource("swordman.png").toString();
+		imagePath=ClassLoader.getSystemResource("swordman.png").toString();
 		maxhp=hp;
 	}
 	@Override

@@ -7,10 +7,10 @@ public class Wizard extends GameCharacter implements RangeCharacter{
 		this.setHp(120);
 		this.setAttack(10);
 		setMagic(50);
-		setMana(200);
+		setMana(150);
 		setSpeed(12);
-		setManaCost(15);
-		self=ClassLoader.getSystemResource("wizard.png").toString();
+		setManaCost(20);
+		imagePath=ClassLoader.getSystemResource("wizard.png").toString();
 		maxhp=hp;
 	}
 

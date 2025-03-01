@@ -1,5 +1,7 @@
 package character;
 
+import java.util.Objects;
+
 import javafx.scene.image.ImageView;
 import javafx.util.Pair;
 
@@ -10,13 +12,13 @@ public abstract class GameCharacter implements Comparable<GameCharacter> {
 	protected int mana;
 	protected int speed;
 	protected int maxhp;
-	protected String self;
+	protected String imagePath;
 	protected double xPos;
 	protected double yPos;
-	protected double originalX=-1;
-	protected double originalY=-1;
+	protected double originalX = -1;
+	protected double originalY = -1;
 	protected ImageView img;
-	
+
 	public ImageView getImg() {
 		return img;
 	}
@@ -25,8 +27,8 @@ public abstract class GameCharacter implements Comparable<GameCharacter> {
 		this.img = img;
 	}
 
-	public String getSelf() {
-		return self;
+	public String getImagePath() {
+		return imagePath;
 	}
 
 	public int getMaxhp() {
@@ -94,7 +96,7 @@ public abstract class GameCharacter implements Comparable<GameCharacter> {
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + " " + this.getAttack();
+		return this.getClass().getSimpleName();
 	}
 
 	public void setPos(double x, double y) {
@@ -102,14 +104,12 @@ public abstract class GameCharacter implements Comparable<GameCharacter> {
 		this.yPos = y;
 	}
 
-	public Pair<Double,Double> getPos(){
-		return new Pair<Double,Double>(xPos,yPos);
+	public Pair<Double, Double> getPos() {
+		return new Pair<Double, Double>(xPos, yPos);
 	}
-	
-	
-	
+
 	public boolean stillDefault() {
-		return (originalX==-1 && originalY==-1);
+		return (originalX == -1 && originalY == -1);
 	}
 
 	public double getOriginalX() {
@@ -125,5 +125,13 @@ public abstract class GameCharacter implements Comparable<GameCharacter> {
 		return originalY;
 	}
 
+	@Override
+	public boolean equals(Object other) {
+		return other!=null && getClass()==other.getClass();
+	}
+	
+	
+
+	
 
 }

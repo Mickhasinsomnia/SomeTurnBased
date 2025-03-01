@@ -6,9 +6,9 @@ import java.util.Collections;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import panels.UtilScene;
 import utilities.ButtonManager;
 import utilities.SaveManager;
-import utilities.UtilScene;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -49,14 +49,10 @@ public class Main extends Application {
 	public static void showTitleScreen(Stage primary) {
 
 		Text titleText = new Text("My Awesome Game");
-		titleText.setFont(Font.font("Arial", FontWeight.BOLD, 60));
-		titleText.setFill(Color.BLACK);
-
-		DropShadow titleStroke = new DropShadow();
-		titleStroke.setColor(Color.GRAY);
-		titleStroke.setRadius(3.0);
-		titleStroke.setSpread(1.2);
-		titleText.setEffect(titleStroke);
+		titleText.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 64));
+		titleText.setFill(Color.WHITE);
+		titleText.setStroke(Color.BLACK);
+		titleText.setStrokeWidth(3);
 
 		Glow glow = new Glow(0.5);
 		titleText.setEffect(glow);
@@ -66,7 +62,7 @@ public class Main extends Application {
 		Button exitButton = ButtonManager.exitButton(primary);
 
 		VBox titleLayout = new VBox(20, titleText, newGame, startButton, exitButton);
-		titleLayout.setAlignment(javafx.geometry.Pos.CENTER);
+		titleLayout.setAlignment(Pos.CENTER);
 
 		Image gifImage = new Image(ClassLoader.getSystemResource("bg.gif").toString());
 		ImageView gifView = new ImageView(gifImage);
@@ -82,5 +78,3 @@ public class Main extends Application {
 
 	}
 }
-
-	

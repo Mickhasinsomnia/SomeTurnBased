@@ -25,6 +25,9 @@ public class LevelSelect {
 			enemy.add(new EnemyArcher());
 
 			enemy.add(new EnemyArcher());
+			
+			enemy.add(new Enemy());
+			enemy.add(new EnemyHealer());
 
 			FightScene level0 = new FightScene(PlayerTeam.player(), enemy, primary, "sand.png", "sound.mp3", 1);
 

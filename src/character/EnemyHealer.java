@@ -8,7 +8,7 @@ public class EnemyHealer extends Enemy {
 		setAttack(20);
 		setSpeed(5);
 		maxhp=hp;
-		self=ClassLoader.getSystemResource("evilHealer.png").toString();
+		imagePath=ClassLoader.getSystemResource("evilHealer.png").toString();
 	}
 	
 	@Override

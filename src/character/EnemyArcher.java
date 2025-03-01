@@ -3,7 +3,8 @@ package character;
 public class EnemyArcher extends Enemy implements RangeCharacter  {
 
 	public EnemyArcher() {
-		setAttack(50);
+		setSpeed(13);
+		setAttack(25);
 		setHp(80);
 		setMana(0);
 	}
