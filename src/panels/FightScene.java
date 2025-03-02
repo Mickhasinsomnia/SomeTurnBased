@@ -141,6 +141,8 @@ public class FightScene extends Pane {
 							drawScene(bg);
 							updateStatusPanels();
 							pressed = false;
+							attackButton.setStyle(defaultButtonStyle);
+							magicButton.setStyle(defaultButtonStyle);
 						});
 					}
 				}
@@ -173,7 +175,7 @@ public class FightScene extends Pane {
 		attackButton.setMinSize(120, 75);
 		magicButton.setMinSize(120, 75);
 		back.setMinSize(248, 40);
-		
+
 		attackButton.setStyle(defaultButtonStyle);
 		magicButton.setStyle(defaultButtonStyle);
 		back.setStyle(defaultButtonStyle);
@@ -199,7 +201,7 @@ public class FightScene extends Pane {
 			pressed = true;
 			type = 1;
 			attackButton.setStyle(selectButtonStyle);
-			magicButton.setStyle(defaultButtonStyle);			
+			magicButton.setStyle(defaultButtonStyle);
 		});
 
 		magicButton.setOnMouseClicked(event -> {
@@ -210,7 +212,6 @@ public class FightScene extends Pane {
 		});
 
 	}
-	
 
 	private void setExit(Stage primary, Thread combatThread) {
 		primary.setOnCloseRequest(event -> {
@@ -303,10 +304,10 @@ public class FightScene extends Pane {
 
 			final int c = countS;
 			rep.setOnMouseClicked(event -> {
-				if (pressed){
+				if (pressed) {
 					choice = c;
 					attackButton.setStyle(defaultButtonStyle);
-					magicButton.setStyle(defaultButtonStyle);	
+					magicButton.setStyle(defaultButtonStyle);
 				}
 			});
 
@@ -357,7 +358,7 @@ public class FightScene extends Pane {
 		} catch (InterruptedException e) {
 
 		}
-		
+
 		if (!(current instanceof EnemyHealer)) {
 
 			Enemy enemy = (Enemy) current;
@@ -526,13 +527,31 @@ public class FightScene extends Pane {
 		resultLabel.setTextFill(Color.WHITE);
 		resultLabel.setLayoutX(340);
 		resultLabel.setLayoutY(250);
+		
+		Clip fanfare=null;
 
+		if (!players.isEmpty()) {
+			try {
+				AudioInputStream audio = AudioSystem.getAudioInputStream(ClassLoader.getSystemResource("victoryFanfare.wav"));
+				fanfare = AudioSystem.getClip();
+				fanfare.open(audio);
+				fanfare.start();
+			} catch (Exception e) {
+				System.out.println("No song");
+				fanfare=null;
+			}
+
+		}
+
+		final Clip finalFanfare = fanfare;
+		
 		Button menuButton = new Button("Back to Menu");
 		menuButton.setFont(Font.font("Arial", FontWeight.BOLD, 24));
 		menuButton.setLayoutX(355);
 		menuButton.setLayoutY(400);
 		menuButton.setOnAction(e -> {
 			Platform.runLater(() -> {
+				finalFanfare.stop();
 				UtilScene.showManage(primary);
 			});
 		});

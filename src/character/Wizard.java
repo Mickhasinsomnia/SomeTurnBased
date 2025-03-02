@@ -40,7 +40,7 @@ public class Wizard extends GameCharacter implements RangeCharacter{
 	@Override
 	public String getWeapon() {
 		
-		return ClassLoader.getSystemResource("arrow.png").toString();
+		return ClassLoader.getSystemResource("light2.png").toString();
 	}
 
 }

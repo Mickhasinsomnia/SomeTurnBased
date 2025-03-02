@@ -33,7 +33,7 @@ public class UtilScene {
 	public static void showManage(Stage primary) {
 		PlayerTeam.player().clear();
 
-		Image bgImage = new Image(ClassLoader.getSystemResource("finalfan2.png").toString());
+		Image bgImage = new Image(ClassLoader.getSystemResource("waiting2.png").toString());
 		ImageView bgImageView = new ImageView(bgImage);
 		bgImageView.setFitWidth(900);
 		bgImageView.setFitHeight(700);

@@ -64,7 +64,7 @@ public class Main extends Application {
 		VBox titleLayout = new VBox(20, titleText, newGame, startButton, exitButton);
 		titleLayout.setAlignment(Pos.CENTER);
 
-		Image gifImage = new Image(ClassLoader.getSystemResource("bg.gif").toString());
+		Image gifImage = new Image(ClassLoader.getSystemResource("BG.gif").toString());
 		ImageView gifView = new ImageView(gifImage);
 		gifView.setFitWidth(900);
 		gifView.setFitHeight(700);
