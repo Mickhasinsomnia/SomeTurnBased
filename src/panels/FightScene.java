@@ -199,14 +199,14 @@ public class FightScene extends Pane {
 			pressed = true;
 			type = 1;
 			attackButton.setStyle(selectButtonStyle);
-					
+			magicButton.setStyle(defaultButtonStyle);			
 		});
 
 		magicButton.setOnMouseClicked(event -> {
 			pressed = true;
 			type = 2;
 			attackButton.setStyle(defaultButtonStyle);
-			
+			magicButton.setStyle(selectButtonStyle);
 		});
 
 	}
