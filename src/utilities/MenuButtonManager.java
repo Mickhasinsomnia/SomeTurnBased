@@ -13,7 +13,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import panels.UtilScene;
 
-public class ButtonManager {
+public class MenuButtonManager {
 	public static Button newgameButton(Stage primary) {
 		Button newGame = new Button("New Game");
 		newGame.setFont(Font.font("Arial", FontWeight.BOLD, 24));
@@ -23,7 +23,7 @@ public class ButtonManager {
 			Main.finished = new ArrayList<>(Collections.nCopies(11, false));
 			UtilScene.showManage(primary);
 		});
-		ButtonManager.styleButton(newGame);
+		MenuButtonManager.styleButton(newGame);
 		return newGame;
 	}
 
@@ -31,7 +31,7 @@ public class ButtonManager {
 		Button startButton = new Button("Load Game");
 		startButton.setFont(Font.font("Arial", FontWeight.BOLD, 24));
 		startButton.setOnAction(e -> UtilScene.showManage(primary));
-		ButtonManager.styleButton(startButton);
+		MenuButtonManager.styleButton(startButton);
 		return startButton;
 	}
 

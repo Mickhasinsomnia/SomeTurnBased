@@ -7,7 +7,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import panels.UtilScene;
-import utilities.ButtonManager;
+import utilities.MenuButtonManager;
 import utilities.SaveManager;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -57,9 +57,9 @@ public class Main extends Application {
 		Glow glow = new Glow(0.5);
 		titleText.setEffect(glow);
 
-		Button newGame = ButtonManager.newgameButton(primary);
-		Button startButton = ButtonManager.loadgameButton(primary);
-		Button exitButton = ButtonManager.exitButton(primary);
+		Button newGame = MenuButtonManager.newgameButton(primary);
+		Button startButton = MenuButtonManager.loadgameButton(primary);
+		Button exitButton = MenuButtonManager.exitButton(primary);
 
 		VBox titleLayout = new VBox(20, titleText, newGame, startButton, exitButton);
 		titleLayout.setAlignment(Pos.CENTER);
@@ -69,8 +69,8 @@ public class Main extends Application {
 		gifView.setFitWidth(900);
 		gifView.setFitHeight(700);
 
-		ButtonManager.styleButton(startButton);
-		ButtonManager.styleButton(exitButton);
+		MenuButtonManager.styleButton(startButton);
+		MenuButtonManager.styleButton(exitButton);
 
 		StackPane root = new StackPane(gifView, titleLayout);
 		Scene titleScene = new Scene(root, 900, 700);

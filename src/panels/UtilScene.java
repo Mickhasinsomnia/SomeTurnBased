@@ -26,7 +26,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import player.PlayerTeam;
-import utilities.ButtonManager;
+import utilities.MenuButtonManager;
 
 public class UtilScene {
 
@@ -49,21 +49,21 @@ public class UtilScene {
 
 		Button selectButton = new Button("Select");
 		selectButton.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-		ButtonManager.styleButton(selectButton);
+		MenuButtonManager.styleButton(selectButton);
 		selectButton.setOnAction(e -> showLevelSelect(primary));
 		selectButton.setLayoutX(670);
 		selectButton.setLayoutY(600);
 
 		Button back = new Button("Back to menu");
 		back.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-		ButtonManager.styleButton(back);
+		MenuButtonManager.styleButton(back);
 		back.setOnAction(e -> Main.showTitleScreen(primary));
 		back.setLayoutX(50);
 		back.setLayoutY(600);
 
 		Button remove = new Button("Clear");
 		remove.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-		ButtonManager.styleButton(remove);
+		MenuButtonManager.styleButton(remove);
 		remove.setLayoutX(500);
 		remove.setLayoutY(600);
 
@@ -147,7 +147,7 @@ public class UtilScene {
 		flowPane.setAlignment(Pos.TOP_LEFT);
 
 		Button Back = new Button("Back");
-		ButtonManager.styleButton(Back);
+		MenuButtonManager.styleButton(Back);
 		Back.setFont(Font.font("Arial", FontWeight.BOLD, 24));
 		Back.setOnAction(e -> {
 			showManage(primary);
@@ -168,7 +168,7 @@ public class UtilScene {
 	private static Button selectLevel(int level, Stage primary) {
 		Button startButton = new Button("Level " + level);
 		startButton.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-		ButtonManager.styleButton(startButton);
+		MenuButtonManager.styleButton(startButton);
 		startButton.setOnMouseClicked(e -> LevelSelect.Level(level, primary));
 		return startButton;
 	}
@@ -188,7 +188,7 @@ public class UtilScene {
 			buttons[i].setLayoutY(100 + i * 50);
 			buttons[i].setLayoutX(50);
 			buttons[i].setFont(Font.font("Arial", FontWeight.BOLD, 18));
-			ButtonManager.styleButton(buttons[i]);
+			MenuButtonManager.styleButton(buttons[i]);
 		}
 		return buttons;
 	}
