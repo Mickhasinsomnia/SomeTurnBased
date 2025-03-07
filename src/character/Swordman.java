@@ -1,24 +1,26 @@
 package character;
 
 
+
 public class Swordman extends GameCharacter {
 
 	public Swordman() {
-		this.setHp(200);
-		this.setAttack(40);
+		setHp(160);
+		setAttack(20);
 		setMagic(0);
 		setMana(0);
 		setSpeed(10);
-		self=ClassLoader.getSystemResource("swordman.png").toString();
-	}
-	@Override
-	public void attack(GameCharacter target) {
-		target.setHp(target.getHp()-getAttack());
+		setMaxHp(160);
 	}
 
 	@Override
-	public void magic(GameCharacter target) {
-		
+	public String getImagePath() {
+		return ClassLoader.getSystemResource("swordman.png").toString();
+	}
+
+	@Override
+	public String getSoundEffect() {
+		return "sword.wav";
 	}
 
 }

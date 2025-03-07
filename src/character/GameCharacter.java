@@ -1,6 +1,9 @@
 package character;
 
+import java.util.ArrayList;
+
 import javafx.scene.image.ImageView;
+import javafx.util.Pair;
 
 public abstract class GameCharacter implements Comparable<GameCharacter> {
 	protected int hp;
@@ -8,11 +11,12 @@ public abstract class GameCharacter implements Comparable<GameCharacter> {
 	protected int magic;
 	protected int mana;
 	protected int speed;
-	protected String self;
-	protected double Xpos;
-	protected double Ypos;
-	protected double originalX=-1;
-	protected double originalY=-1;
+	protected int maxHp;
+	protected int manaCost;
+	protected double xPos;
+	protected double yPos;
+	protected double originalX = -1;
+	protected double originalY = -1;
 	protected ImageView img;
 
 	public ImageView getImg() {
@@ -23,24 +27,34 @@ public abstract class GameCharacter implements Comparable<GameCharacter> {
 		this.img = img;
 	}
 
-	public String getSelf() {
-		return self;
+	public abstract String getImagePath();
+
+	public int getMaxHp() {
+		return maxHp;
 	}
 
-	public GameCharacter() {
-		super();
+	public void setMaxHp(int maxHp) {
+		this.maxHp = maxHp;
 	}
 
-	public abstract void attack(GameCharacter target);
+	public void attack(GameCharacter target) {
+		target.setHp(target.getHp() - getAttack());
+	}
 
-	public abstract void magic(GameCharacter target);
+	public void magic(ArrayList<GameCharacter> all) {
+		if (getMana() <= 0)
+			return;
+		for (GameCharacter target : all)
+			target.setHp(target.getHp() - getMagic());
+		this.setMana(getMana() - getManaCost());
+	}
 
 	public int getHp() {
 		return hp;
 	}
 
 	public void setHp(int hp) {
-		this.hp = hp;
+		this.hp = Math.max(0, hp);
 	}
 
 	public int getAttack() {
@@ -68,6 +82,8 @@ public abstract class GameCharacter implements Comparable<GameCharacter> {
 	}
 
 	public void setMana(int mana) {
+		if (mana < 0)
+			mana = 0;
 		this.mana = mana;
 	}
 
@@ -81,6 +97,14 @@ public abstract class GameCharacter implements Comparable<GameCharacter> {
 		this.speed = speed;
 	}
 
+	public int getManaCost() {
+		return manaCost;
+	}
+
+	public void setManaCost(int manaCost) {
+		this.manaCost = manaCost;
+	}
+
 	@Override
 	public int compareTo(GameCharacter other) {
 		return Integer.compare(other.speed, this.speed);
@@ -88,39 +112,36 @@ public abstract class GameCharacter implements Comparable<GameCharacter> {
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + " " + this.getAttack();
+		return this.getClass().getSimpleName();
 	}
 
 	public void setPos(double x, double y) {
-		this.Xpos = x;
-		this.Ypos = y;
+		this.xPos = x;
+		this.yPos = y;
 	}
 
-	public double getPosX() {
-		return Xpos;
+	public Pair<Double, Double> getPos() {
+		return new Pair<Double, Double>(xPos, yPos);
 	}
 
-	public double getPosY() {
-		return Ypos;
-	}
-	
 	public boolean stillDefault() {
-		return (originalX==-1 && originalY==-1);
+		return (originalX == -1 && originalY == -1);
 	}
 
-	public double getOriginalX() {
-		return originalX;
+	public Pair<Double, Double> getOriginalPos() {
+		return new Pair<Double, Double>(originalX, originalY);
 	}
 
-	public void setOriginalX(double originalX) {
-		this.originalX = originalX;
+	public void setOriginalPos(double X, double Y) {
+		this.originalX = X;
+		this.originalY = Y;
 	}
 
-	public double getOriginalY() {
-		return originalY;
+	@Override
+	public boolean equals(Object other) {
+		return other != null && getClass() == other.getClass();
 	}
 
-	public void setOriginalY(double originalY) {
-		this.originalY = originalY;
-	}
+	public abstract String getSoundEffect();
+
 }

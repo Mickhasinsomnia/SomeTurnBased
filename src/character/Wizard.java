@@ -1,41 +1,31 @@
 package character;
 
+public class Wizard extends GameCharacter implements RangeCharacter {
 
-public class Wizard extends GameCharacter{
-	protected int manaCost;
-	
 	public Wizard() {
-		this.setHp(120);
-		this.setAttack(10);
-		setMagic(50);
-		setMana(200);
+		setHp(120);
+		setAttack(25);
+		setMagic(20);
+		setMana(120);
 		setSpeed(12);
-		setManaCost(15);
-		self=ClassLoader.getSystemResource("wizz.png").toString();
-	}
-
-	public int getManaCost() {
-		return manaCost;
-	}
-
-	public void setManaCost(int manaCost) {
-		this.manaCost = manaCost;
+		setManaCost(20);
+		setMaxHp(120);
 	}
 
 	@Override
-	public void attack(GameCharacter target) {
-		target.setHp(target.getHp()-getAttack());
-		
+	public String getWeapon() {
+
+		return ClassLoader.getSystemResource("light1.png").toString();
 	}
 
 	@Override
-	public void magic(GameCharacter target) {
-		if(mana<=0)
-			return;
-			
-		target.setHp(target.getHp()-getMagic());
-		this.setMana(getMana()-getManaCost());
-		
+	public String getImagePath() {
+		return ClassLoader.getSystemResource("wizard.png").toString();
+	}
+
+	@Override
+	public String getSoundEffect() {
+		return "magic.wav";
 	}
 
 }
