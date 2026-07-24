@@ -2,9 +2,6 @@ package character;
 
 import java.util.ArrayList;
 
-import javafx.scene.layout.Pane;
-import panels.FightScene;
-
 public class Xande extends Enemy implements RangeCharacter {
 
 	public Xande() {
@@ -32,37 +29,28 @@ public class Xande extends Enemy implements RangeCharacter {
 		super.attack(target);
 		setHp(Math.min(getMaxHp(), getHp() + 40));
 	}
-	
+
 	@Override
 	public void magic(ArrayList<GameCharacter> all) {
 		super.magic(all);
 		setHp(Math.min(getMaxHp(), getHp() + 40));
 	}
 
-	
 	@Override
 	public String getSoundEffect() {
 		return "fire.wav";
 	}
 
+	/** Boss behavior: always focus whoever currently has the least HP. */
 	@Override
-	public void chooseTarget(ArrayList<GameCharacter> target, Pane pane) {
+	public GameCharacter selectTarget(ArrayList<GameCharacter> aliveTargets) {
 		int min = 0;
-		for (int i = 1; i < target.size(); i++) {
-			if (target.get(i).getHp() < target.get(min).getHp())
+		for (int i = 1; i < aliveTargets.size(); i++) {
+			if (aliveTargets.get(i).getHp() < aliveTargets.get(min).getHp()) {
 				min = i;
-		}
-		GameCharacter choosenTarget = target.get(min);
-		String action = takeAction();
-		if (action.equals("attack")) {
-			FightScene.executeTurnAction(1, this, choosenTarget, pane, target);
-		} else if (action.equals("magic")) {
-			if (this.getMana() > 0) {
-				FightScene.executeTurnAction(2, this, choosenTarget, pane, target);
-			} else {
-				FightScene.executeTurnAction(1, this, choosenTarget, pane, target);
 			}
 		}
+		return aliveTargets.get(min);
 	}
 
 }

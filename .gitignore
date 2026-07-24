@@ -2,7 +2,9 @@
 bin/
 tmp/
 *.class
-
+.idea/
+*.iml
+unlock.txt
 
 
 .settings/
