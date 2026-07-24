@@ -5,6 +5,6 @@ tmp/
 .idea/
 *.iml
 unlock.txt
-
+.DS_Store
 
 .settings/
